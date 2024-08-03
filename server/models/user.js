@@ -23,15 +23,7 @@ const userSchema = new mongoose.Schema({
   subscribers: { 
     type: Number, 
     default: 0 
-  },
-  likedVideos: [{ 
-    type: mongoose.Schema.Types.ObjectId, 
-    ref: 'Video' 
-  }],
-  dislikedVideos: [{ 
-    type: mongoose.Schema.Types.ObjectId, 
-    ref: 'Video' 
-  }]
+  }
 }, { timestamps: true });
 
 // Hash password before saving
@@ -42,6 +34,21 @@ userSchema.pre('save', async function(next) {
   next();
 });
 
+// Method to add a new user
+userSchema.statics.addUser = async function(userData) {
+  try {
+    const newUser = new this(userData);
+    const savedUser = await newUser.save();
+    return savedUser;
+  } catch (error) {
+    if (error.name === 'ValidationError') {
+      throw new Error('Validation Error: ' + error.message);
+    } else {
+      throw new Error('Error adding user: ' + error.message);
+    }
+  }
+};
+
 // Method to compare password
 userSchema.methods.comparePassword = function(candidatePassword) {
   return bcrypt.compare(candidatePassword, this.password);
@@ -51,15 +58,13 @@ userSchema.methods.comparePassword = function(candidatePassword) {
 userSchema.statics.findUserById = async function(id) {
   try {
     const user = await this.findById(id)
-      .select('-password')
-      .populate('likedVideos', 'title') // Populate with just the title of liked videos
-      .populate('dislikedVideos', 'title'); // Populate with just the title of disliked videos
-    if (!user) {
-      throw new Error('User not found');
-    }
     return user;
   } catch (error) {
-    throw new Error('Error finding user: ' + error.message);
+    if (error.name === 'ValidationError') {
+      throw new Error('Validation Error: ' + error.message);
+    } else {
+        throw new Error('Error adding user: ' + error.message);
+    }
   }
 };
 
