@@ -4,6 +4,7 @@ const userController = require('../controllers/userController');
 const authController = require('../controllers/authController');
 const videoController = require('../controllers/videoController');
 const authMiddleware = require('../middleware/auth');
+const likesController = require('../controllers/likesController');
 
 /* USER ROUTES */
 router.get('/users', userController.getAllUsers);
@@ -18,5 +19,10 @@ router.get('/profile/:id', authMiddleware, userController.getProfile);
 
 router.get('/videos/:id', videoController.getVideoById);
 router.post('/videos', videoController.addVideo);
+
+/* LIKES OUTES */
+
+router.get('/videos/:id/likes', likesController.getLikesByVideoId);
+router.get('/videos/:id/dislikes', likesController.getDisLikesByVideoId);
 
 module.exports = router;
