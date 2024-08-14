@@ -37,9 +37,16 @@ likesSchema.statics.findDisLikesByVideoId = async function(videoId) {
     }
 }
 
-likesSchema.statics.addLike = async function(LikeData) {
+likesSchema.statics.addLike = async function(likeData, videoId) {
     try {
-        const Like = new this(LikeData);
+        // Combine the video_id with the data from the request body
+        const completeLikeData = {
+            ...likeData,
+            video_id: videoId,
+            action: 'like'
+        };
+
+        const Like = new this(completeLikeData);
         const savedLike = await Like.save();
         return savedLike;
     } catch (error) {
@@ -52,6 +59,31 @@ likesSchema.statics.addLike = async function(LikeData) {
         }
     }
 }
+
+
+likesSchema.statics.addDisLike = async function(likeData, videoId) {
+    try {
+        // Combine the video_id with the data from the request body
+        const completeLikeData = {
+            ...likeData,
+            video_id: videoId,
+            action: 'dislike'
+        };
+
+        const DisLike = new this(completeLikeData);
+        const savedLike = await DisLike.save();
+        return savedLike;
+    } catch (error) {
+        if (error.name === 'ValidationError') {
+            throw new Error('Validation Error: ' + error.message);
+        } else if (error.code === 11000) {
+            throw new Error('Duplicate Key Error: ' + error.message);
+        } else {
+            throw new Error('Error adding video: ' + error.message);
+        }
+    }
+}
+
 
 const Like = mongoose.model('Like', likesSchema);
 

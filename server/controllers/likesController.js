@@ -54,19 +54,29 @@ likesController.addLike = async (req, res) => {
         // Extract the video_id from the URL parameters
         const videoId = req.params.id;
 
-        // Combine the video_id with the data from the request body
-        const likeData = {
-            ...req.body,
-            video_id: videoId
-        };
-
         // Call the static method to add the like
-        const newLike = await Like.addLike(likeData);
+        const newLike = await Like.addLike(req.body, videoId);
         res.status(201).json(newLike);
       } catch (error) {
         res.status(400).json({ message: error.message });
       }
 };
+
+// Define the POST /api/videos/:id/dislikes route handler
+likesController.addDisLike = async (req, res) => {
+    // Create a new DisLike object with the data from the request body
+    try {
+        // Extract the video_id from the URL parameters
+        const videoId = req.params.id;
+
+        // Call the static method to add the like
+        const newLike = await Like.addDisLike(req.body, videoId);
+        res.status(201).json(newLike);
+      } catch (error) {
+        res.status(400).json({ message: error.message });
+      }
+};
+
 
 
 // Export the videoController object
