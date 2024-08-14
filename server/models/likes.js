@@ -84,6 +84,35 @@ likesSchema.statics.addDisLike = async function(likeData, videoId) {
     }
 }
 
+likesSchema.statics.deleteLike = async function(userId, videoId) {
+    try {
+        const deletedLike = await this.findOneAndDelete({ user_id: userId, video_id: videoId, action: 'like' });
+
+        if (!deletedLike) {
+            throw new Error('Like not found');
+        }
+
+        return deletedLike;
+    } catch (error) {
+        throw new Error('Error deleting like: ' + error.message);
+    }
+};
+
+
+likesSchema.statics.deleteDisLike = async function(userId, videoId) {
+    try {
+        const deletedLike = await this.findOneAndDelete({ user_id: userId, video_id: videoId, action: 'dislike' });
+
+        if (!deletedLike) {
+            throw new Error('DisLike not found');
+        }
+
+        return deletedLike;
+    } catch (error) {
+        throw new Error('Error deleting like: ' + error.message);
+    }
+};
+
 
 const Like = mongoose.model('Like', likesSchema);
 
