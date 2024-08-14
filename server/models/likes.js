@@ -37,6 +37,22 @@ likesSchema.statics.findDisLikesByVideoId = async function(videoId) {
     }
 }
 
+likesSchema.statics.addLike = async function(LikeData) {
+    try {
+        const Like = new this(LikeData);
+        const savedLike = await Like.save();
+        return savedLike;
+    } catch (error) {
+        if (error.name === 'ValidationError') {
+            throw new Error('Validation Error: ' + error.message);
+        } else if (error.code === 11000) {
+            throw new Error('Duplicate Key Error: ' + error.message);
+        } else {
+            throw new Error('Error adding video: ' + error.message);
+        }
+    }
+}
+
 const Like = mongoose.model('Like', likesSchema);
 
 module.exports = Like;

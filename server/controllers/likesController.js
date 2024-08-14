@@ -47,6 +47,27 @@ likesController.getDisLikesByVideoId = (req, res) => {
         });
 };
 
+// Define the POST /api/videos/:id/likes route handler
+likesController.addLike = async (req, res) => {
+    // Create a new Like object with the data from the request body
+    try {
+        // Extract the video_id from the URL parameters
+        const videoId = req.params.id;
+
+        // Combine the video_id with the data from the request body
+        const likeData = {
+            ...req.body,
+            video_id: videoId
+        };
+
+        // Call the static method to add the like
+        const newLike = await Like.addLike(likeData);
+        res.status(201).json(newLike);
+      } catch (error) {
+        res.status(400).json({ message: error.message });
+      }
+};
+
 
 // Export the videoController object
 module.exports = likesController;

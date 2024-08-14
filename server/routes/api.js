@@ -24,5 +24,7 @@ router.post('/videos', videoController.addVideo);
 
 router.get('/videos/:id/likes', likesController.getLikesByVideoId);
 router.get('/videos/:id/dislikes', likesController.getDisLikesByVideoId);
+router.post('/videos/:id/likes', likesController.addLike);
+//router.post('/videos/:id/dislikes', likesController.addDisLike);
 
 module.exports = router;
