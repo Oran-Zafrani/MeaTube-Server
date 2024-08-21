@@ -120,21 +120,40 @@ likesController.deleteDisLike = async (req, res) => {
 };
 
 
-// Define the DELETE all likes
-likesController.deleteDisLike = async (req, res) => {
+// DELETE all likes
+likesController.deleteAllLikes = async (req, res) => {
     try {
         // Extract the video_id from the URL parameters
         const videoId = req.params.id;
-        const userId = req.body.user_id; // Assuming user_id is sent in the request body
 
-        // Call the static method to delete the like
-        const deletedLike = await Like.deleteDisLike(userId, videoId);
+        // Call the static method to delete the likes
+        const deletedLikes = await Like.deletAllLikes(videoId);
         
-        if (!deletedLike) {
-            return res.status(404).json({ message: 'disLike not found' });
+        if (!deletedLikes) {
+            return res.status(404).json({ message: 'Likes not found in this video' });
         }
 
-        res.status(200).json({ message: 'disLike deleted successfully' });
+        res.status(200).json({ message: 'All likes are deleted successfully' });
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+};
+
+
+// DELETE all dislikes
+likesController.deleteAllDisLikes = async (req, res) => {
+    try {
+        // Extract the video_id from the URL parameters
+        const videoId = req.params.id;
+
+        // Call the static method to delete the dislikes
+        const deletedLikes = await Like.deleteAllDisLikes(videoId);
+        
+        if (!deletedLikes) {
+            return res.status(404).json({ message: 'Dislikes not found in this video' });
+        }
+
+        res.status(200).json({ message: 'All dislikes are deleted successfully' });
     } catch (error) {
         res.status(400).json({ message: error.message });
     }

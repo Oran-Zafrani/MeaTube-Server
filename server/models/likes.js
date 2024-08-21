@@ -114,6 +114,37 @@ likesSchema.statics.deleteDisLike = async function(userId, videoId) {
 };
 
 
+// Delete all likes for a specific video
+likesSchema.statics.deleteAllLikes = async function(videoId) {
+    try {
+        const result = await this.deleteMany({ video_id: videoId, action: 'like' });
+
+        if (result.deletedCount === 0) {
+            throw new Error('No likes found for this video');
+        }
+
+        return result;
+    } catch (error) {
+        throw new Error('Error deleting likes: ' + error.message);
+    }
+};
+
+// Delete all Dislikes for a specific video
+likesSchema.statics.deleteAllDisLikes = async function(videoId) {
+    try {
+        const result = await this.deleteMany({ video_id: videoId, action: 'dislike' });
+
+        if (result.deletedCount === 0) {
+            throw new Error('No dislikes found for this video');
+        }
+
+        return result;
+    } catch (error) {
+        throw new Error('Error deleting dislikes: ' + error.message);
+    }
+};
+
+
 const Like = mongoose.model('Like', likesSchema);
 
 module.exports = Like;
