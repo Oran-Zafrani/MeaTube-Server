@@ -20,5 +20,25 @@ commentsController.getCommentsByCommentId = (req, res) => {
         });
 };
 
+// Define the DELETE /api/videos/:id/ route handler
+commentsController.deleteComment = async (req, res) => {
+    try {
+        // Extract the _id from the URL parameters
+        const commentId = req.params.id;
+
+        // Call the static method to delete the comment
+        const deletedComment = await Comment.deleteComment(commentId);
+        
+        if (!deletedComment) {
+            return res.status(404).json({ message: 'Comment not found' });
+        }
+
+        res.status(200).json({ message: 'Comment deleted successfully' });
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+};
+
+
 // Export the commentsController object
 module.exports = commentsController;

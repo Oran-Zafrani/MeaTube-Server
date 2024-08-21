@@ -5,10 +5,6 @@ const commentsSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
-    commentId: {
-        type: Number,
-        required: true
-    },
     commentText: {
         type: String,
         required: true
@@ -47,6 +43,22 @@ commentsSchema.statics.findCommentsByCommentId = async function(videoId) {
         throw new Error('Error finding comments by commentId: ' + error.message);
     }
 }
+
+// Define a static method to delete a comment by _id
+commentsSchema.statics.deleteComment = async function(commentId) {
+    try {
+        const objectId = new mongoose.Types.ObjectId(commentId);
+        const deletedComment = await this.findOneAndDelete({ _id: objectId});
+
+        if (!deletedComment) {
+            throw new Error('Comment not found');
+        }
+
+        return deletedComment;
+    } catch (error) {
+        throw new Error('Error deleting comment: ' + error.message);
+    }
+};
 
 const Comment = mongoose.model('Comment', commentsSchema);
 
