@@ -73,11 +73,24 @@ videoSchema.statics.addVideo = async function(videoData) {
 }
 
 // Define a static method to delete a video by _id (videoId)
-videoSchema.statics.deleteVideoById = async function(videoId) {
+videoSchema.statics.deleteVideoById = async function(videoId, reqUsername) {
     try {
         const objectId = new mongoose.Types.ObjectId(videoId);
+
+        const video = await this.findById(objectId);
+
+        // If no video is found with the given ID, throw an error
+        if (!video) {
+            throw new Error('Video not found');
+        }
+
+        // Check if the username of the video matches the reqUsername
+        if (video.username !== reqUsername) {
+            throw new Error('Unauthorized');
+        }
         const deletedVideo = await this.findOneAndDelete({ _id: objectId });
 
+        //ORAN NEED TO DELETE LIKES AND COMMENTS!!!!
         if (!deletedVideo) {
             throw new Error('Video not found');
         }
@@ -93,19 +106,26 @@ videoSchema.statics.deleteVideoById = async function(videoId) {
 
 
 // Define the static method for updating a video
-videoSchema.statics.updateVideoById = async function(videoId, updatedData) {
+videoSchema.statics.updateVideoById = async function(videoId, updatedData, reqUsername) {
     try {
         // Use findByIdAndUpdate to update the video by its ID
+        const video = await this.findById(videoId);
+
+        // If no video is found with the given ID, throw an error
+        if (!video) {
+            throw new Error('Video not found');
+        }
+
+        // Check if the username of the video matches the reqUsername
+        if (video.username !== reqUsername) {
+            throw new Error('Unauthorized');
+        }
+
         const updatedVideo = await this.findByIdAndUpdate(
             videoId, 
             updatedData, 
             { new: true, runValidators: true } // Options: return the updated document, and run validation
         );
-
-        // If no video is found with the given ID, throw an error
-        if (!updatedVideo) {
-            throw new Error('Video not found');
-        }
 
         return updatedVideo;
     } catch (error) {

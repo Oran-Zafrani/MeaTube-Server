@@ -18,10 +18,10 @@ router.get('/profile/:id', authMiddleware, userController.getProfile);
 
 /* VIDEO ROUTES */
 
-router.get('/videos/:id', videoController.getVideoById);
-router.post('/videos', videoController.addVideo);
-router.delete('/videos/:id', videoController.deleteVideoById);
-router.put('/videos/:id', videoController.updateVideo);
+router.get('/videos/:id',authMiddleware , videoController.getVideoById);
+router.post('/videos',authMiddleware, videoController.addVideo);
+router.delete('/videos/:id',authMiddleware, videoController.deleteVideoById);
+router.put('/videos/:id',authMiddleware , videoController.updateVideo);
 
 /* LIKES ROUTES */
 
