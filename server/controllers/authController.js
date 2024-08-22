@@ -6,10 +6,13 @@ const jwt = require('jsonwebtoken');
 exports.login = async (req, res) => {
   try {
     const { username, password } = req.body;
-    
     // Find user by username
-    const user = await User.findOne({ username });
+    const user = await User.findUserByUsername(username);
     if (!user) {
+      return res.status(401).json({ message: 'Authentication failed' });
+    }
+
+    if (password !== user.password) {
       return res.status(401).json({ message: 'Authentication failed' });
     }
 

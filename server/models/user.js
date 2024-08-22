@@ -62,7 +62,7 @@ userSchema.statics.addUser = async function(userData) {
 // Static method to find user by ID
 userSchema.statics.findUserById = async function(userId) {
   try {
-    const user = await this.find({_id:userId});
+    const user = await this.findOne({_id:userId});
     return user;
   } catch (error) {
     if (error.name === 'ValidationError') {
@@ -75,7 +75,7 @@ userSchema.statics.findUserById = async function(userId) {
 
 userSchema.statics.findUserByUsername = async function(username) {
   try {
-    const user = await this.find({username: username });
+    const user = await this.findOne({username: username });
     return user;
   } catch (error) {
     if (error.name === 'ValidationError') {
