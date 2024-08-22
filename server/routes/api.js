@@ -8,6 +8,7 @@ const authMiddleware = require('../middleware/auth');
 /* USER ROUTES */
 router.get('/users', userController.getAllUsers);
 router.get('/users/:id', userController.getUserById);
+router.get('/users/username/:username', authController.getUserByUsername);
 router.post('/users', userController.createUser);
 router.post('/login', authController.login);
 
