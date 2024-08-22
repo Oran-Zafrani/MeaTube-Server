@@ -20,6 +20,7 @@ router.get('/profile/:id', authMiddleware, userController.getProfile);
 
 router.get('/videos/:id', videoController.getVideoById);
 router.post('/videos', videoController.addVideo);
+router.delete('/videos/:id', videoController.deleteVideoById);
 
 /* LIKES ROUTES */
 

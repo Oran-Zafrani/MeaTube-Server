@@ -72,6 +72,26 @@ videoSchema.statics.addVideo = async function(videoData) {
     }
 }
 
+// Define a static method to delete a video by _id (videoId)
+videoSchema.statics.deleteVideoById = async function(videoId) {
+    try {
+        const objectId = new mongoose.Types.ObjectId(videoId);
+        const deletedVideo = await this.findOneAndDelete({ _id: objectId });
+
+        if (!deletedVideo) {
+            throw new Error('Video not found');
+        }
+
+        // Call the method to delete all comments associated with this videoId
+        //await Comment.deleteAllCommentsByVideoId(videoId); //ADD AFTER ORAN ADD COMMENTS
+
+        return deletedVideo;
+    } catch (error) {
+        throw new Error('Error deleting video: ' + error.message);
+    }
+};
+
+
 const Video = mongoose.model('Video', videoSchema);
 
 module.exports = Video;

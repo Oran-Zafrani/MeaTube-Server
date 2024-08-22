@@ -37,5 +37,25 @@ videoController.addVideo = async (req, res) => {
       }
 };
 
+// Define the DELETE /api/videos/:id route handler
+videoController.deleteVideoById = async (req, res) => {
+        try {    
+        // Extract the videoId from the URL parameters
+        const videoId = req.params.id; 
+
+        // Call the static method to delete the video and associated comments
+        const deletedVideo = await Video.deleteVideoById(videoId);
+
+        if (!deletedVideo) {
+            return res.status(404).json({ message: 'Video not found' });
+        }
+
+        res.status(200).json({ message: 'Video and associated comments deleted successfully' });
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+};
+
+
 // Export the videoController object
 module.exports = videoController;
