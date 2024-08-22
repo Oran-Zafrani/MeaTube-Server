@@ -100,6 +100,16 @@ videoSchema.statics.getTop20Videos = async function() {
     }
 }
 
+videoSchema.statics.getVideosByUsername = async function(username) {
+    try {
+        const videos = await this.find({ username: username });
+        return videos;
+    }
+    catch (error) {
+        throw new Error('Error getting videos by username: ' + error.message);
+    }
+}
+
 const Video = mongoose.model('Video', videoSchema);
 
 module.exports = Video;
