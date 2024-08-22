@@ -10,6 +10,7 @@ router.get('/users/:id', userController.getUserById);
 router.get('/users/username/:username', userController.getUserByUsername);
 router.post('/users', userController.createUser);
 router.post('/login', authController.login);
+router.delete('/users/:username', userController.deleteUser);
 
 
 /* VIDEO ROUTES */

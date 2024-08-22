@@ -86,6 +86,23 @@ userSchema.statics.findUserByUsername = async function(username) {
   }
 };
 
+
+// Define a static method to delete a user by userId
+userSchema.statics.deleteUser = async function(userId) {
+  try {
+      const deletedUser = await this.findOneAndDelete({ username: userId });
+
+      if (!deletedUser) {
+          throw new Error('User not found');
+      }
+
+      return deletedUser;
+  } catch (error) {
+      throw new Error('Error deleting user: ' + error.message);
+  }
+};
+
+
 const User = mongoose.model('User', userSchema);
 
 module.exports = User;
