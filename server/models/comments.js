@@ -60,6 +60,29 @@ commentsSchema.statics.deleteComment = async function(commentId) {
     }
 };
 
+
+// Define the static method for adding a comment
+commentsSchema.statics.addComment = async function(commentData, videoId) {
+    try {
+        // Combine the video_id with the data from the request body
+        const completeCommentData = {
+            ...commentData,
+            videoId: videoId
+        };
+
+        const comment = new this(completeCommentData);
+        const savedComment = await comment.save();
+        return savedComment;
+    } catch (error) {
+        if (error.name === 'ValidationError') {
+            throw new Error('Validation Error: ' + error.message);
+        } else {
+            throw new Error('Error adding comment: ' + error.message);
+        }
+    }
+};
+
+
 const Comment = mongoose.model('Comment', commentsSchema);
 
 module.exports = Comment;

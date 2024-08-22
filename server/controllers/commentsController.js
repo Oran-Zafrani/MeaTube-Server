@@ -40,5 +40,20 @@ commentsController.deleteComment = async (req, res) => {
 };
 
 
+// Define the POST /api/videos/:id/comments route handler
+commentsController.AddComment = async (req, res) => {
+    try {
+        // Extract the video_id from the URL parameters
+        const videoId = req.params.id;
+
+        // Call the static method to add the comment
+        const newComment = await Comment.addComment(req.body, videoId);
+        res.status(201).json(newComment);
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+};
+
+
 // Export the commentsController object
 module.exports = commentsController;
