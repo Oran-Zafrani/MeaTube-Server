@@ -76,6 +76,25 @@ commentsController.updateComment = async (req, res) => {
     }
 };
 
+// Define the DELETE all comments from video with videoId route handler
+commentsController.deleteAllCommentsByVideoId = async (req, res) => {
+    try {
+        // Extract the _id from the URL parameters
+        const videoId = req.params.id;
+
+        // Call the static method to delete the comments from the video
+        const deletedComment = await Comment.deleteAllCommentsByVideoId(videoId);
+        
+        if (!deletedComment) {
+            return res.status(404).json({ message: 'video not found' });
+        }
+
+        res.status(200).json({ message: 'Comments deleted successfully' });
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+};
+
 
 // Export the commentsController object
 module.exports = commentsController;

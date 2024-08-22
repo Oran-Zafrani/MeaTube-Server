@@ -110,6 +110,24 @@ commentsSchema.statics.updateCommentById = async function(commentId, updatedData
 };
 
 
+// Define the static method for deleting all comments by videoId
+commentsSchema.statics.deleteAllCommentsByVideoId = async function(videoId) {
+    try {
+        // Use deleteMany to remove all comments with the given videoId
+        const result = await this.deleteMany({ videoId: videoId });
+
+        // If no comments were found and deleted, throw an error
+        if (result.deletedCount === 0) {
+            throw new Error('No comments found for the specified video');
+        }
+
+        return result;
+    } catch (error) {
+        throw new Error('Error deleting comments: ' + error.message);
+    }
+};
+
+
 const Comment = mongoose.model('Comment', commentsSchema);
 
 module.exports = Comment;
