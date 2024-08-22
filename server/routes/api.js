@@ -36,5 +36,6 @@ router.delete('/videos/:id/dislikes', likesController.deleteDisLike);
 router.get('/videos/:id/comments', commentsController.getCommentsByCommentId);
 router.delete('/comments/:id', commentsController.deleteComment);
 router.post('/videos/:id/comments', commentsController.AddComment);
+router.put('/comments/:id', commentsController.updateComment);
 
 module.exports = router;

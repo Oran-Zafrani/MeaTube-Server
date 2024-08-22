@@ -54,6 +54,28 @@ commentsController.AddComment = async (req, res) => {
     }
 };
 
+// Define the UPDATE /api/comments/:id route handler
+commentsController.updateComment = async (req, res) => {
+    try {
+        // Extract the comment ID from the URL parameters
+        const commentId = req.params.id;
+
+        // Find the comment by _id and update it with the data from the request body
+        const updatedComment = await Comment.findByIdAndUpdate(commentId, req.body, {
+            new: true, // Return the updated document
+            runValidators: true // Run schema validations on update
+        });
+
+        if (!updatedComment) {
+            return res.status(404).json({ message: 'Comment not found' });
+        }
+
+        res.status(200).json(updatedComment);
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+};
+
 
 // Export the commentsController object
 module.exports = commentsController;

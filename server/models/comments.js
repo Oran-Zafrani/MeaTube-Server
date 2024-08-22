@@ -83,6 +83,33 @@ commentsSchema.statics.addComment = async function(commentData, videoId) {
 };
 
 
+
+// Define the static method for updating a comment
+commentsSchema.statics.updateCommentById = async function(commentId, updatedData) {
+    try {
+        // Use findByIdAndUpdate to update the comment by its ID
+        const updatedComment = await this.findByIdAndUpdate(
+            commentId, 
+            updatedData, 
+            { new: true, runValidators: true } // Options: return the updated document, and run validation
+        );
+
+        // If no comment is found with the given ID, throw an error
+        if (!updatedComment) {
+            throw new Error('Comment not found');
+        }
+
+        return updatedComment;
+    } catch (error) {
+        if (error.name === 'ValidationError') {
+            throw new Error('Validation Error: ' + error.message);
+        } else {
+            throw new Error('Error updating comment: ' + error.message);
+        }
+    }
+};
+
+
 const Comment = mongoose.model('Comment', commentsSchema);
 
 module.exports = Comment;
