@@ -37,5 +37,16 @@ videoController.addVideo = async (req, res) => {
       }
 };
 
+// Controller function to get the top 20 videos in random order
+videoController.getTop20Videos = async (req, res) => {
+    try {
+        const videos = await Video.getTop20Videos();
+        res.json(videos);
+    } catch (error) {
+        res.status(500).json({ message: 'Server error' });
+    }
+};
+
+
 // Export the videoController object
 module.exports = videoController;
