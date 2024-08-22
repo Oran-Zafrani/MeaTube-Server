@@ -18,16 +18,27 @@ exports.createUser = async (req, res) => {
   }
 };
 
-
-exports.getProfile = async (req, res) => {
+exports.getUserByUsername = async (req, res) => {
   try {
-    const id = req.params.id;
-    const user = await User.findById(id).select('-password');
+    const user = await User.findOne({ username: req.params.username }).select('-password'); 
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
     res.json(user);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: 'Server error' });
   }
 };
+
+exports.getUserById = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id).select('-password'); 
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    res.json(user);
+  } catch (error) {
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+

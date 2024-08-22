@@ -8,16 +8,12 @@ const authMiddleware = require('../middleware/auth');
 /* USER ROUTES */
 router.get('/users', userController.getAllUsers);
 router.get('/users/:id', userController.getUserById);
-router.get('/users/username/:username', authController.getUserByUsername);
+router.get('/users/username/:username', userController.getUserByUsername);
 router.post('/users', userController.createUser);
 router.post('/login', authController.login);
 
-// Protected route
-router.get('/profile/:id', authMiddleware, userController.getProfile);
 
 /* VIDEO ROUTES */
-
 router.get('/videos/:id', videoController.getVideoById);
 router.post('/videos', videoController.addVideo);
-
 module.exports = router;
