@@ -20,24 +20,26 @@ exports.createUser = async (req, res) => {
 
 exports.getUserByUsername = async (req, res) => {
   try {
-    const user = await User.findOne({ username: req.params.username }).select('-password'); 
+    const user = await User.findUserByUsername(req.params.username); // Use the User model and findUserByUsername method
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
     res.json(user);
   } catch (error) {
+    console.error(`Error fetching user by username: ${error.message}`); // Log the error for debugging
     res.status(500).json({ message: 'Server error' });
   }
 };
 
 exports.getUserById = async (req, res) => {
   try {
-    const user = await User.findById(req.params.id).select('-password'); 
+    const user = await User.findUserById(req.params.id ); // Use the User model and findOne method
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
     res.json(user);
   } catch (error) {
+    console.error(`Error fetching user by ID: ${error.message}`); // Log the error for debugging
     res.status(500).json({ message: 'Server error' });
   }
 };
