@@ -5,10 +5,10 @@ const Comment = require("../models/comments");
 const commentsController = {};
 
 // Define the GET /api/comments/:id route handler
-commentsController.getCommentsByCommentId = (req, res) => {
-    const commentId = req.params.id;
+commentsController.getCommentsByVideoId = (req, res) => {
+    const videoId = req.params.id;
 
-    Comment.findCommentsByCommentId(commentId)
+    Comment.findCommentsByVideoId(videoId)
         .then(comments => {
             if (comments.length === 0) {
                 return res.status(404).json({ message: 'No comments found for this commentId' });
