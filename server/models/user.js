@@ -1,13 +1,7 @@
 // models/User.js
 const mongoose = require('mongoose');
-const bcrypt = require('bcrypt');
 
 const userSchema = new mongoose.Schema({
-  id: { 
-    type: Number, 
-    required: true, 
-    unique: true 
-  },
   username: { 
     type: String, 
     required: true, 
@@ -22,47 +16,53 @@ const userSchema = new mongoose.Schema({
     required: true 
   },
   image: { 
-    type: String, 
-    default: '' // You might want to set a default image URL
-  },
-  subscribers: { 
-    type: Number, 
-    default: 0 
-  },
-  likedVideos: { 
-    type: [String], 
-    default: [] 
-  },
-  dislikedVideos: { 
-    type: [String], 
-    default: [] 
+    type: String
   }
 }, { timestamps: true });
+userSchema.index({ username: 1 }, { unique: true });
 
-// Method to add a new user
+
 userSchema.statics.addUser = async function(userData) {
+  const { username, password, passwordConfirmation, displayName, image } = userData;
+
+  // Check if all fields are filled out
+  if (!username || !password || !passwordConfirmation || !displayName || !image) {
+    throw new Error("All fields must be filled out!");
+  }
+
+  // Check if passwords match
+  if (password !== passwordConfirmation) {
+    throw new Error("Passwords do not match!");
+  }
+
+  // Check password complexity
+  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+  if (!passwordRegex.test(password)) {
+    throw new Error("Password is not complex enough! Please choose another password according to password details.");
+  }
+
   try {
+
     const newUser = new this(userData);
     const savedUser = await newUser.save();
+
     return savedUser;
   } catch (error) {
     if (error.name === 'ValidationError') {
       throw new Error('Validation Error: ' + error.message);
+    } else if (error.code === 11000) { // Handle duplicate key error
+      throw new Error('Duplicate key error: A user with this identifier already exists.');
     } else {
       throw new Error('Error adding user: ' + error.message);
     }
   }
 };
 
-// Method to compare password
-userSchema.methods.comparePassword = function(candidatePassword) {
-  return bcrypt.compare(candidatePassword, this.password);
-};
 
 // Static method to find user by ID
 userSchema.statics.findUserById = async function(userId) {
   try {
-    const user = await this.find({id:userId});
+    const user = await this.find({_id:userId});
     return user;
   } catch (error) {
     if (error.name === 'ValidationError') {

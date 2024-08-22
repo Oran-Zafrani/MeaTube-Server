@@ -6,7 +6,6 @@ const videoController = require('../controllers/videoController');
 const authMiddleware = require('../middleware/auth');
 
 /* USER ROUTES */
-router.get('/users', userController.getAllUsers);
 router.get('/users/:id', userController.getUserById);
 router.get('/users/username/:username', userController.getUserByUsername);
 router.post('/users', userController.createUser);
