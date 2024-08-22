@@ -35,7 +35,7 @@ const commentsSchema = new mongoose.Schema({
 });
 
 // Static method to find comments by commentId
-commentsSchema.statics.findCommentsByCommentId = async function(videoId) {
+commentsSchema.statics.findCommentsByVideoId = async function(videoId) {
     try {
         const comments = await this.find({ videoId: videoId });
         return comments;
