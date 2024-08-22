@@ -43,6 +43,9 @@ likesSchema.statics.findDisLikesByVideoId = async function(videoId) {
 }
 
 likesSchema.statics.addLike = async function(likeData, videoId) {
+    // Extract the user_id from likeData
+    const userId = likeData.user_id;
+
     try {
         // Combine the video_id with the data from the request body
         const completeLikeData = {
@@ -58,7 +61,8 @@ likesSchema.statics.addLike = async function(likeData, videoId) {
         if (error.name === 'ValidationError') {
             throw new Error('Validation Error: ' + error.message);
         } else if (error.code === 11000) {
-            throw new Error('Duplicate Key Error: ' + error.message);
+            this.deleteLike(userId, videoId)
+            throw new Error('Delete the like');
         } else {
             throw new Error('Error adding video: ' + error.message);
         }
@@ -67,6 +71,9 @@ likesSchema.statics.addLike = async function(likeData, videoId) {
 
 
 likesSchema.statics.addDisLike = async function(likeData, videoId) {
+    // Extract the user_id from likeData
+    const userId = likeData.user_id;
+
     try {
         // Combine the video_id with the data from the request body
         const completeLikeData = {
@@ -82,7 +89,8 @@ likesSchema.statics.addDisLike = async function(likeData, videoId) {
         if (error.name === 'ValidationError') {
             throw new Error('Validation Error: ' + error.message);
         } else if (error.code === 11000) {
-            throw new Error('Duplicate Key Error: ' + error.message);
+            this.deleteDisLike(userId, videoId)
+            throw new Error('Delete the dislike');
         } else {
             throw new Error('Error adding video: ' + error.message);
         }
