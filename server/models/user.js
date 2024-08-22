@@ -86,6 +86,30 @@ userSchema.statics.findUserByUsername = async function(username) {
   }
 };
 
+userSchema.statics.updateUser = async function(username, updatedData) {
+  try {
+      // Use findOneAndUpdate to update the user by its username
+      const updatedUser = await this.findOneAndUpdate(
+          { username: username }, 
+          updatedData, 
+          { new: true, runValidators: true } // Options: return the updated document, and run validation
+      );
+
+      // If no user is found with the given username, throw an error
+      if (!updatedUser) {
+          throw new Error('User not found');
+      }
+
+      return updatedUser;
+  } catch (error) {
+      if (error.name === 'ValidationError') {
+          throw new Error('Validation Error: ' + error.message);
+      } else {
+          throw new Error('Error updating user: ' + error.message);
+      }
+  }
+};
+
 const User = mongoose.model('User', userSchema);
 
 module.exports = User;
