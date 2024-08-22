@@ -57,5 +57,26 @@ videoController.deleteVideoById = async (req, res) => {
 };
 
 
+// Define the UPDATE /api/videos/:id route handler
+videoController.updateVideo = async (req, res) => {
+    try {
+        // Extract the video ID from the URL parameters
+        const videoId = req.params.id;
+
+        // Find the video by _id and update it with the data from the request body
+        const updatedVideo = await Video.updateVideoById(videoId, req.body)
+
+        if (!updatedVideo) {
+            return res.status(404).json({ message: 'Video not found' });
+        }
+
+        res.status(200).json(updatedVideo);
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+};
+
+
+
 // Export the videoController object
 module.exports = videoController;

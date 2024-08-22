@@ -92,6 +92,32 @@ videoSchema.statics.deleteVideoById = async function(videoId) {
 };
 
 
+// Define the static method for updating a video
+videoSchema.statics.updateVideoById = async function(videoId, updatedData) {
+    try {
+        // Use findByIdAndUpdate to update the video by its ID
+        const updatedVideo = await this.findByIdAndUpdate(
+            videoId, 
+            updatedData, 
+            { new: true, runValidators: true } // Options: return the updated document, and run validation
+        );
+
+        // If no video is found with the given ID, throw an error
+        if (!updatedVideo) {
+            throw new Error('Video not found');
+        }
+
+        return updatedVideo;
+    } catch (error) {
+        if (error.name === 'ValidationError') {
+            throw new Error('Validation Error: ' + error.message);
+        } else {
+            throw new Error('Error updating video: ' + error.message);
+        }
+    }
+};
+
+
 const Video = mongoose.model('Video', videoSchema);
 
 module.exports = Video;
