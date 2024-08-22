@@ -1,7 +1,20 @@
 // controllers/authController.js
 const User = require('../models/user');
 const jwt = require('jsonwebtoken');
-const bcrypt = require('bcrypt');
+
+
+
+exports.getUserById = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id).select('-password'); // Exclude password field
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    res.json(user);
+  } catch (error) {
+    res.status(500).json({ message: 'Server error' });
+  }
+};
 
 exports.login = async (req, res) => {
   try {
@@ -10,12 +23,6 @@ exports.login = async (req, res) => {
     // Find user by username
     const user = await User.findOne({ username });
     if (!user) {
-      return res.status(401).json({ message: 'Authentication failed' });
-    }
-
-    // Check password
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) {
       return res.status(401).json({ message: 'Authentication failed' });
     }
 
