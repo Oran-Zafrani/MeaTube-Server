@@ -33,9 +33,9 @@ router.delete('/videos/:id/dislikes', likesController.deleteDisLike);
 
 /* COMMENTS ROUTES */
 
-router.get('/videos/:id/comments', commentsController.getCommentsByCommentId);
-router.delete('/comments/:id', commentsController.deleteComment);
-router.post('/videos/:id/comments', commentsController.AddComment);
-router.put('/comments/:id', commentsController.updateComment);
+router.get('/videos/:id/comments', authMiddleware, commentsController.getCommentsByCommentId);
+router.delete('/comments/:id', authMiddleware, commentsController.deleteComment);
+router.post('/videos/:id/comments', authMiddleware, commentsController.AddComment);
+router.put('/comments/:id', authMiddleware, commentsController.updateComment);
 
 module.exports = router;
