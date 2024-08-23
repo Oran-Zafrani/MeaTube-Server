@@ -25,12 +25,12 @@ router.put('/videos/:id',authMiddleware , videoController.updateVideo);
 
 /* LIKES ROUTES */
 
-router.get('/videos/:id/likes', likesController.getLikesByVideoId);
-router.get('/videos/:id/dislikes', likesController.getDisLikesByVideoId);
-router.post('/videos/:id/likes', likesController.addLike);
-router.post('/videos/:id/dislikes', likesController.addDisLike);
-router.delete('/videos/:id/likes', likesController.deleteLike);
-router.delete('/videos/:id/dislikes', likesController.deleteDisLike);
+router.get('/videos/:id/likes', authMiddleware, likesController.getLikesByVideoId);
+router.get('/videos/:id/dislikes', authMiddleware, likesController.getDisLikesByVideoId);
+router.post('/videos/:id/likes', authMiddleware, likesController.addLike);
+router.post('/videos/:id/dislikes', authMiddleware, likesController.addDisLike);
+router.delete('/videos/:id/likes', authMiddleware, likesController.deleteLike);
+router.delete('/videos/:id/dislikes', authMiddleware, likesController.deleteDisLike);
 
 
 /* COMMENTS ROUTES */

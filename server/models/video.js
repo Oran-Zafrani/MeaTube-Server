@@ -1,4 +1,6 @@
 const mongoose = require('mongoose');
+const Like = require('./likes');
+const Comment = require('./comments');
 
 const videoSchema = new mongoose.Schema({
     title: {
@@ -86,17 +88,17 @@ videoSchema.statics.deleteVideoById = async function(videoId, reqUsername) {
 
         // Check if the username of the video matches the reqUsername
         if (video.username !== reqUsername) {
-            throw new Error('Unauthorized');
+            throw new Error('user is not authorized to delete this video');
         }
+
+        Like.deleteAllLikes(videoId);
+        Like.deleteAllDisLikes(videoId);
+        Comment.deleteAllCommentsByVideoId(videoId);
+
         const deletedVideo = await this.findOneAndDelete({ _id: objectId });
 
-        //ORAN NEED TO DELETE LIKES AND COMMENTS!!!!
-        if (!deletedVideo) {
-            throw new Error('Video not found');
-        }
 
         // Call the method to delete all comments associated with this videoId
-        //await Comment.deleteAllCommentsByVideoId(videoId); //ADD AFTER ORAN ADD COMMENTS
 
         return deletedVideo;
     } catch (error) {
@@ -118,7 +120,7 @@ videoSchema.statics.updateVideoById = async function(videoId, updatedData, reqUs
 
         // Check if the username of the video matches the reqUsername
         if (video.username !== reqUsername) {
-            throw new Error('Unauthorized');
+            throw new Error('user is not authorized to update this video');
         }
 
         const updatedVideo = await this.findByIdAndUpdate(
