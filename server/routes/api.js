@@ -4,6 +4,8 @@ const userController = require('../controllers/userController');
 const authController = require('../controllers/authController');
 const videoController = require('../controllers/videoController');
 const authMiddleware = require('../middleware/auth');
+const likesController = require('../controllers/likesController');
+const commentsController = require('../controllers/commentsController');
 
 /* USER ROUTES */
 router.get('/users/:id', userController.getUserById);
@@ -21,5 +23,22 @@ router.get('/videos', videoController.getTop20Videos);
 router.get('/videos/username/:username', videoController.getVideosByUsername);
 
 
+
+/* LIKES ROUTES */
+
+router.get('/videos/:id/likes', likesController.getLikesByVideoId);
+router.get('/videos/:id/dislikes', likesController.getDisLikesByVideoId);
+router.post('/videos/:id/likes', likesController.addLike);
+router.post('/videos/:id/dislikes', likesController.addDisLike);
+router.delete('/videos/:id/likes', likesController.deleteLike);
+router.delete('/videos/:id/dislikes', likesController.deleteDisLike);
+
+
+/* COMMENTS ROUTES */
+
+router.get('/videos/:id/comments', authMiddleware, commentsController.getCommentsByVideoId);
+router.delete('/comments/:id', authMiddleware, commentsController.deleteComment);
+router.post('/videos/:id/comments', authMiddleware, commentsController.AddComment);
+router.put('/comments/:id', authMiddleware, commentsController.updateComment);
 
 module.exports = router;
