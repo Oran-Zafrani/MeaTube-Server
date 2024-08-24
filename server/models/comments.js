@@ -1,0 +1,133 @@
+const mongoose = require('mongoose');
+
+const commentsSchema = new mongoose.Schema({
+    videoId: {
+        type: Number,
+        required: true
+    },
+    commentText: {
+        type: String,
+        required: true
+    },
+    userName: {
+        type: String,
+        required: true
+    },
+    userImage: {
+        type: String,
+        required: true
+    },
+    timestamp: {
+        type: Date,
+        default: Date.now,
+        required: true
+    },
+    likesNum: {
+        type: Number,
+        default: 0,
+        required: true
+    },
+    dislikesNum: {
+        type: Number,
+        default: 0,
+        required: true
+    }
+});
+
+// Static method to find comments by commentId
+commentsSchema.statics.findCommentsByVideoId = async function(videoId) {
+    try {
+        const comments = await this.find({ videoId: videoId });
+        return comments;
+    } catch (error) {
+        throw new Error('Error finding comments by commentId: ' + error.message);
+    }
+}
+
+// Define a static method to delete a comment by _id
+commentsSchema.statics.deleteComment = async function(commentId) {
+    try {
+        const objectId = new mongoose.Types.ObjectId(commentId);
+        const deletedComment = await this.findOneAndDelete({ _id: objectId});
+
+        if (!deletedComment) {
+            throw new Error('Comment not found');
+        }
+
+        return deletedComment;
+    } catch (error) {
+        throw new Error('Error deleting comment: ' + error.message);
+    }
+};
+
+
+// Define the static method for adding a comment
+commentsSchema.statics.addComment = async function(commentData, videoId) {
+    try {
+        // Combine the video_id with the data from the request body
+        const completeCommentData = {
+            ...commentData,
+            videoId: videoId
+        };
+
+        const comment = new this(completeCommentData);
+        const savedComment = await comment.save();
+        return savedComment;
+    } catch (error) {
+        if (error.name === 'ValidationError') {
+            throw new Error('Validation Error: ' + error.message);
+        } else {
+            throw new Error('Error adding comment: ' + error.message);
+        }
+    }
+};
+
+
+
+// Define the static method for updating a comment
+commentsSchema.statics.updateCommentById = async function(commentId, updatedData) {
+    try {
+        // Use findByIdAndUpdate to update the comment by its ID
+        const updatedComment = await this.findByIdAndUpdate(
+            commentId, 
+            updatedData, 
+            { new: true, runValidators: true } // Options: return the updated document, and run validation
+        );
+
+        // If no comment is found with the given ID, throw an error
+        if (!updatedComment) {
+            throw new Error('Comment not found');
+        }
+
+        return updatedComment;
+    } catch (error) {
+        if (error.name === 'ValidationError') {
+            throw new Error('Validation Error: ' + error.message);
+        } else {
+            throw new Error('Error updating comment: ' + error.message);
+        }
+    }
+};
+
+
+// Define the static method for deleting all comments by videoId
+commentsSchema.statics.deleteAllCommentsByVideoId = async function(videoId) {
+    try {
+        // Use deleteMany to remove all comments with the given videoId
+        const result = await this.deleteMany({ videoId: videoId });
+
+        // If no comments were found and deleted, throw an error
+        if (result.deletedCount === 0) {
+            throw new Error('No comments found for the specified video');
+        }
+
+        return result;
+    } catch (error) {
+        throw new Error('Error deleting comments: ' + error.message);
+    }
+};
+
+
+const Comment = mongoose.model('Comment', commentsSchema);
+
+module.exports = Comment;
