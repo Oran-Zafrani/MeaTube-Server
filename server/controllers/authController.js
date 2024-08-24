@@ -9,7 +9,7 @@ exports.login = async (req, res) => {
     // Find user by username
     const user = await User.findUserByUsername(username);
     if (!user) {
-      return res.status(401).json({ message: 'Authentication failed' });
+      return res.status(401).json({ message: 'User is not found' });
     }
 
     if (password !== user.password) {
