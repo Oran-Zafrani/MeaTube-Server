@@ -1,3 +1,5 @@
+const Comment = require("../models/comments");
+const Like = require("../models/likes");
 const Video = require("../models/video");
 
 // Import any necessary modules or dependencies
@@ -10,14 +12,35 @@ videoController.getVideoById = (req, res) => {
     // Get the video ID from the request parameters
     const id = req.params.id;
     // Find the video by ID
-    Video.findById(id)
+    Video.findVideoById(id)
         .then(video => {
             // If the video is not found
             if (!video) {
                 // Return a 404 Not Found response
                 return res.status(404).json({ message: 'Video not found' });
             }
-            // Return the video as JSON
+
+            const videoLikes = Like.findLikesByVideoId(id);
+            const videoDislikes = Like.findDisLikesByVideoId(id);
+            const Comments = Comment.findCommentsByVideoId(id);
+
+            //waiting for all promises to resolve
+            Promise.all([videoLikes, videoDislikes, Comments])
+                .then((values) => {
+                    //assigning the values to the video object
+                    video.likes = values[0].length || 0;
+                    video.dislikes = values[1].length || 0;
+                    video.comments = [...values[2]] || [];
+
+                    if(req.userData) {
+                        video.userLiked = values[0].some(like => like.username === req.userData.username);
+                        video.userDisliked = values[1].some(dislike => dislike.username === req.userData.username);
+                    }
+                    // Return the video as JSON
+                    res.json(video);
+                })
+                
+       // Return the video as JSON
             res.json(video);
         })
         .catch(error => {

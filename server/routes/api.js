@@ -4,6 +4,7 @@ const userController = require('../controllers/userController');
 const authController = require('../controllers/authController');
 const videoController = require('../controllers/videoController');
 const authMiddleware = require('../middleware/auth');
+const weakAuthMiddleware = require('../middleware/weakAuth');
 const likesController = require('../controllers/likesController');
 const commentsController = require('../controllers/commentsController');
 
@@ -17,7 +18,7 @@ router.delete('/users/:username', userController.deleteUser);
 
 
 /* VIDEO ROUTES */
-router.get('/videos/:id', videoController.getVideoById);
+router.get('/videos/:id', weakAuthMiddleware, videoController.getVideoById);
 router.get('/videos', videoController.getTop20Videos);
 router.get('/videos/username/:username', videoController.getVideosByUsername);
 router.post('/videos',authMiddleware, videoController.addVideo);
