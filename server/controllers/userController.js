@@ -6,7 +6,12 @@ exports.createUser = async (req, res) => {
     res.status(201).json(newUser);
   } catch (error) {
     let errorMessage = error.message;
-      res.status(400).json({ message: error.message });
+    if (errorMessage.includes("All fields must be filled out!")) {
+      res.status(400).json({ message: "All fields must be filled out!" });
+    } else if (errorMessage.includes("Passwords do not match!")) {
+      res.status(400).json({ message: "Passwords do not match!" });
+    } else if (errorMessage.includes("Password is not complex enough!")) {
+      res.status(400).json({ message: "Password is not complex enough! Please choose another password according to password details." });
     } else if (errorMessage.includes("Validation Error")) {
       res.status(400).json({ message: "Validation Error: " + error.message });
     } else if (errorMessage.includes("E11000 duplicate key error")) {
