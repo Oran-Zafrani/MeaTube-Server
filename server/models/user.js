@@ -17,6 +17,10 @@ const userSchema = new mongoose.Schema({
   },
   image: { 
     type: String
+  },
+  subscribers: {
+    type: Number,
+    default: 0
   }
 }, { timestamps: true });
 userSchema.index({ username: 1 }, { unique: true });
