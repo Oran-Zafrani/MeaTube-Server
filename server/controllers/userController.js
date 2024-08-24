@@ -48,3 +48,21 @@ exports.getUserById = async (req, res) => {
   }
 };
 
+exports.updateUser = async (req, res) => {
+  try {
+      // Extract the username from the URL parameters
+      const username = req.params.username;
+
+      // Call the updateUser method from the User model
+      const updatedUser = await User.updateUser(username , req.body);
+
+      if (!updatedUser) {
+          return res.status(404).json({ message: 'User not found' });
+      }
+
+      res.status(200).json(updatedUser);
+  } catch (error) {
+      res.status(400).json({ message: error.message });
+  }
+};
+

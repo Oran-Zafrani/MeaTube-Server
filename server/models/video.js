@@ -1,3 +1,4 @@
+const { once } = require('events');
 const mongoose = require('mongoose');
 
 const videoSchema = new mongoose.Schema({
@@ -69,6 +70,43 @@ videoSchema.statics.addVideo = async function(videoData) {
         } else {
             throw new Error('Error adding video: ' + error.message);
         }
+    }
+}
+
+videoSchema.statics.getTop20Videos = async function() {
+    try {
+        const videos = await this.find({});
+
+        // Sort videos by views in descending order
+        videos.sort((a, b) => b.views - a.views);
+
+        // Get the top 10 most viewed videos
+        const top10MostViewed = videos.slice(0, 10);
+
+        // Get the remaining videos
+        const remainingVideos = videos.slice(10);
+
+        // Shuffle the remaining videos to get 10 random videos
+        const shuffledRemaining = remainingVideos.sort(() => 0.5 - Math.random());
+        const top10Random = shuffledRemaining.slice(0, 10);
+
+        // Combine the top 10 most viewed and top 10 random videos and shuffle them
+        const top20Videos = [...top10MostViewed, ...top10Random];
+        top20Videos.sort(() => 0.5 - Math.random());
+        
+        return top20Videos;
+    } catch (error) {
+        throw new Error('Error getting top 20 videos: ' + error.message);
+    }
+}
+
+videoSchema.statics.getVideosByUsername = async function(username) {
+    try {
+        const videos = await this.find({ username: username });
+        return videos;
+    }
+    catch (error) {
+        throw new Error('Error getting videos by username: ' + error.message);
     }
 }
 
