@@ -2,12 +2,12 @@ const mongoose = require('mongoose');
 
 
 const likesSchema = new mongoose.Schema({
-    user_id: {
-        type: Number,
+    username: {
+        type: String,
         required: true
     },
     video_id: {
-        type: Number,
+        type: String,
         required: true
     },
     action: {
@@ -42,14 +42,14 @@ likesSchema.statics.findDisLikesByVideoId = async function(videoId) {
     }
 }
 
-likesSchema.statics.addLike = async function(likeData, videoId) {
+likesSchema.statics.addLike = async function(username, videoId) {
     // Extract the user_id from likeData
-    const userId = likeData.user_id;
+    const userId = username;
 
     try {
         // Combine the video_id with the data from the request body
         const completeLikeData = {
-            ...likeData,
+            username,
             video_id: videoId,
             action: 'like'
         };
@@ -61,7 +61,7 @@ likesSchema.statics.addLike = async function(likeData, videoId) {
         if (error.name === 'ValidationError') {
             throw new Error('Validation Error: ' + error.message);
         } else if (error.code === 11000) {
-            this.deleteLike(userId, videoId)
+            this.deleteLike(username, videoId)
             throw new Error('Delete the like');
         } else {
             throw new Error('Error adding video: ' + error.message);
@@ -70,14 +70,14 @@ likesSchema.statics.addLike = async function(likeData, videoId) {
 }
 
 
-likesSchema.statics.addDisLike = async function(likeData, videoId) {
+likesSchema.statics.addDisLike = async function(username, videoId) {
     // Extract the user_id from likeData
-    const userId = likeData.user_id;
+    const userId = username;
 
     try {
         // Combine the video_id with the data from the request body
         const completeLikeData = {
-            ...likeData,
+            username,
             video_id: videoId,
             action: 'dislike'
         };
@@ -89,7 +89,7 @@ likesSchema.statics.addDisLike = async function(likeData, videoId) {
         if (error.name === 'ValidationError') {
             throw new Error('Validation Error: ' + error.message);
         } else if (error.code === 11000) {
-            this.deleteDisLike(userId, videoId)
+            this.deleteDisLike(username, videoId)
             throw new Error('Delete the dislike');
         } else {
             throw new Error('Error adding video: ' + error.message);
@@ -97,9 +97,9 @@ likesSchema.statics.addDisLike = async function(likeData, videoId) {
     }
 }
 
-likesSchema.statics.deleteLike = async function(userId, videoId) {
+likesSchema.statics.deleteLike = async function(username, videoId) {
     try {
-        const deletedLike = await this.findOneAndDelete({ user_id: userId, video_id: videoId, action: 'like' });
+        const deletedLike = await this.findOneAndDelete({username: username, video_id: videoId, action: 'like' });
 
         if (!deletedLike) {
             throw new Error('Like not found');
@@ -112,9 +112,9 @@ likesSchema.statics.deleteLike = async function(userId, videoId) {
 };
 
 
-likesSchema.statics.deleteDisLike = async function(userId, videoId) {
+likesSchema.statics.deleteDisLike = async function(username, videoId) {
     try {
-        const deletedLike = await this.findOneAndDelete({ user_id: userId, video_id: videoId, action: 'dislike' });
+        const deletedLike = await this.findOneAndDelete({ username: username, video_id: videoId, action: 'dislike' });
 
         if (!deletedLike) {
             throw new Error('DisLike not found');
@@ -132,9 +132,7 @@ likesSchema.statics.deleteAllLikes = async function(videoId) {
     try {
         const result = await this.deleteMany({ video_id: videoId, action: 'like' });
 
-        if (result.deletedCount === 0) {
-            throw new Error('No likes found for this video');
-        }
+        console.log("deleted " + result.deletedCount + " likes");
 
         return result;
     } catch (error) {
@@ -147,9 +145,7 @@ likesSchema.statics.deleteAllDisLikes = async function(videoId) {
     try {
         const result = await this.deleteMany({ video_id: videoId, action: 'dislike' });
 
-        if (result.deletedCount === 0) {
-            throw new Error('No dislikes found for this video');
-        }
+        console.log("deleted " + result.deletedCount + " dislikes");
 
         return result;
     } catch (error) {

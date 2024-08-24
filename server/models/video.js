@@ -1,5 +1,7 @@
 const { once } = require('events');
 const mongoose = require('mongoose');
+const Like = require('./likes');
+const Comment = require('./comments');
 
 const videoSchema = new mongoose.Schema({
     title: {
@@ -72,6 +74,72 @@ videoSchema.statics.addVideo = async function(videoData) {
         }
     }
 }
+
+// Define a static method to delete a video by _id (videoId)
+videoSchema.statics.deleteVideoById = async function(videoId, reqUsername) {
+    try {
+        const objectId = new mongoose.Types.ObjectId(videoId);
+
+        const video = await this.findById(objectId);
+
+        // If no video is found with the given ID, throw an error
+        if (!video) {
+            throw new Error('Video not found');
+        }
+
+        // Check if the username of the video matches the reqUsername
+        if (video.username !== reqUsername) {
+            throw new Error('user is not authorized to delete this video');
+        }
+
+        Like.deleteAllLikes(videoId);
+        Like.deleteAllDisLikes(videoId);
+        Comment.deleteAllCommentsByVideoId(videoId);
+
+        const deletedVideo = await this.findOneAndDelete({ _id: objectId });
+
+
+        // Call the method to delete all comments associated with this videoId
+
+        return deletedVideo;
+    } catch (error) {
+        throw new Error('Error deleting video: ' + error.message);
+    }
+};
+
+
+// Define the static method for updating a video
+videoSchema.statics.updateVideoById = async function(videoId, updatedData, reqUsername) {
+    try {
+        // Use findByIdAndUpdate to update the video by its ID
+        const video = await this.findById(videoId);
+
+        // If no video is found with the given ID, throw an error
+        if (!video) {
+            throw new Error('Video not found');
+        }
+
+        // Check if the username of the video matches the reqUsername
+        if (video.username !== reqUsername) {
+            throw new Error('user is not authorized to update this video');
+        }
+
+        const updatedVideo = await this.findByIdAndUpdate(
+            videoId, 
+            updatedData, 
+            { new: true, runValidators: true } // Options: return the updated document, and run validation
+        );
+
+        return updatedVideo;
+    } catch (error) {
+        if (error.name === 'ValidationError') {
+            throw new Error('Validation Error: ' + error.message);
+        } else {
+            throw new Error('Error updating video: ' + error.message);
+        }
+    }
+};
+
 
 videoSchema.statics.getTop20Videos = async function() {
     try {

@@ -53,9 +53,10 @@ likesController.addLike = async (req, res) => {
     try {
         // Extract the video_id from the URL parameters
         const videoId = req.params.id;
-
+        const username = req.userData.username; // Assuming username came from JWT token
+        
         // Call the static method to add the like
-        const newLike = await Like.addLike(req.body, videoId);
+        const newLike = await Like.addLike(username, videoId);
         res.status(201).json(newLike);
       } catch (error) {
         res.status(400).json({ message: error.message });
@@ -68,9 +69,10 @@ likesController.addDisLike = async (req, res) => {
     try {
         // Extract the video_id from the URL parameters
         const videoId = req.params.id;
+        const username = req.userData.username; // Assuming username came from JWT token
 
         // Call the static method to add the like
-        const newLike = await Like.addDisLike(req.body, videoId);
+        const newLike = await Like.addDisLike(username, videoId);
         res.status(201).json(newLike);
       } catch (error) {
         res.status(400).json({ message: error.message });

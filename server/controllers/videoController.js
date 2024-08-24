@@ -55,7 +55,46 @@ videoController.getVideosByUsername = async (req, res) => {
         res.status(500).json({ message: 'Server error' });
     }
 };
+// Define the DELETE /api/videos/:id route handler
+videoController.deleteVideoById = async (req, res) => {
+        try {    
+        // Extract the videoId from the URL parameters
+        const videoId = req.params.id; 
+        const reqUsername = req.userData.username;
 
+        // Call the static method to delete the video and associated comments
+        const deletedVideo = await Video.deleteVideoById(videoId, reqUsername);
+
+        if (!deletedVideo) {
+            return res.status(404).json({ message: 'Video not found' });
+        }
+
+        res.status(200).json({ message: 'Video and associated comments deleted successfully' });
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+};
+
+
+// Define the UPDATE /api/videos/:id route handler
+videoController.updateVideo = async (req, res) => {
+    try {
+        // Extract the video ID from the URL parameters
+        const videoId = req.params.id;
+        const reqUsername = req.userData.username;
+
+        // Find the video by _id and update it with the data from the request body
+        const updatedVideo = await Video.updateVideoById(videoId, req.body, reqUsername)
+
+        if (!updatedVideo) {
+            return res.status(404).json({ message: 'Video not found' });
+        }
+
+        res.status(200).json(updatedVideo);
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+};
 
 
 

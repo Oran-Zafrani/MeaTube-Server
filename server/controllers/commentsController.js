@@ -45,7 +45,7 @@ commentsController.AddComment = async (req, res) => {
     try {
         // Extract the video_id from the URL parameters
         const videoId = req.params.id;
-
+        req.body.userName = req.userData.username;
         // Call the static method to add the comment
         const newComment = await Comment.addComment(req.body, videoId);
         res.status(201).json(newComment);
