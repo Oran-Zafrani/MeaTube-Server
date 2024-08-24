@@ -13,7 +13,7 @@ exports.login = async (req, res) => {
     }
 
     if (password !== user.password) {
-      return res.status(401).json({ message: 'Authentication failed' });
+      return res.status(401).json({ message: 'Password is incorrect' });
     }
 
     // Generate JWT
