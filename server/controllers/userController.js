@@ -48,6 +48,27 @@ exports.getUserById = async (req, res) => {
   }
 };
 
+
+// Define the DELETE /api/users/:id route handler
+exports.deleteUser = async (req, res) => {
+  try {
+      // Extract the _id from the URL parameters
+      const userId = req.params.username;
+
+      // Call the static method to delete the user
+      const deletedUser = await User.deleteUser(userId);
+      
+      if (!deletedUser) {
+          return res.status(404).json({ message: 'User not found' });
+      }
+
+      res.status(200).json({ message: 'User deleted successfully' });
+  } catch (error) {
+      res.status(400).json({ message: error.message });
+  }
+};
+
+
 exports.updateUser = async (req, res) => {
   try {
       // Extract the username from the URL parameters
