@@ -55,7 +55,7 @@ userSchema.statics.addUser = async function(userData) {
     if (error.name === 'ValidationError') {
       throw new Error('Validation Error: ' + error.message);
     } else if (error.code === 11000) { // Handle duplicate key error
-      throw new Error('Duplicate key error: A user with this identifier already exists.');
+      throw new Error('A user with this username is already exists.');
     } else {
       throw new Error('Error adding user: ' + error.message);
     }

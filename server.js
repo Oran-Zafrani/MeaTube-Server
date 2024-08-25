@@ -1,7 +1,8 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const path = require('path');
-const cors = require('cors'); // Add this line
+const cors = require('cors'); 
+const bodyParser = require('body-parser');
 require('dotenv').config();
 
 const app = express();
@@ -13,9 +14,9 @@ mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTop
   .catch(err => console.error('MongoDB connection error:', err));
 
 // Middleware
-app.use(cors()); // Add this line
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(cors());
+app.use(bodyParser.json({ limit: '50mb' })); //  payload size limit
+app.use(bodyParser.urlencoded({ limit: '50mb', extended: true })); 
 
 // Serve static files from the React app
 app.use(express.static(path.join(__dirname, 'client')));
