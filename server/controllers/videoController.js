@@ -52,6 +52,8 @@ videoController.getVideoById = (req, res) => {
 // Define the POST /api/videos route handler
 videoController.addVideo = async (req, res) => {
     // Create a new video object with the data from the request body
+    req.body.username = req.userData.username;
+    req.body.channel = req.userData.displayName;
     try {
         await Video.addVideo(req.body).then((newVideo) => {
         res.status(201).json(newVideo)});
