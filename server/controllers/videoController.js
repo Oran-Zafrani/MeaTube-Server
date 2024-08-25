@@ -28,20 +28,17 @@ videoController.getVideoById = (req, res) => {
             Promise.all([videoLikes, videoDislikes, Comments])
                 .then((values) => {
                     //assigning the values to the video object
-                    video.likes = values[0].length || 0;
-                    video.dislikes = values[1].length || 0;
-                    video.comments = [...values[2]] || [];
+                    video._doc.likes = values[0].length || 0;
+                    video._doc.dislikes = values[1].length || 0;
+                    video._doc.comments = [...values[2]] || [];
 
                     if(req.userData) {
-                        video.userLiked = values[0].some(like => like.username === req.userData.username);
-                        video.userDisliked = values[1].some(dislike => dislike.username === req.userData.username);
+                        video._doc.userLiked = values[0].some(like => like.username === req.userData.username);
+                        video._doc.userDisliked = values[1].some(dislike => dislike.username === req.userData.username);
                     }
                     // Return the video as JSON
                     res.json(video);
                 })
-                
-       // Return the video as JSON
-            res.json(video);
         })
         .catch(error => {
             // Return a 500 Internal Server Error response
