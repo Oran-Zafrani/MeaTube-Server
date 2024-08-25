@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const commentsSchema = new mongoose.Schema({
     videoId: {
-        type: Number,
+        type: String,
         required: true
     },
     commentText: {
@@ -116,10 +116,7 @@ commentsSchema.statics.deleteAllCommentsByVideoId = async function(videoId) {
         // Use deleteMany to remove all comments with the given videoId
         const result = await this.deleteMany({ videoId: videoId });
 
-        // If no comments were found and deleted, throw an error
-        if (result.deletedCount === 0) {
-            throw new Error('No comments found for the specified video');
-        }
+        console.log("deleted " + result.deletedCount + " comments");
 
         return result;
     } catch (error) {

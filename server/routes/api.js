@@ -4,31 +4,37 @@ const userController = require('../controllers/userController');
 const authController = require('../controllers/authController');
 const videoController = require('../controllers/videoController');
 const authMiddleware = require('../middleware/auth');
+const weakAuthMiddleware = require('../middleware/weakAuth');
 const likesController = require('../controllers/likesController');
 const commentsController = require('../controllers/commentsController');
 
 /* USER ROUTES */
-router.get('/users', userController.getAllUsers);
+router.get('/users/:id', userController.getUserById);
+router.get('/users/username/:username', userController.getUserByUsername);
 router.post('/users', userController.createUser);
-
 router.post('/login', authController.login);
+router.put('/users/:username' , userController.updateUser);
+router.delete('/users/:username', userController.deleteUser);
 
-// Protected route
-router.get('/profile/:id', authMiddleware, userController.getProfile);
 
 /* VIDEO ROUTES */
+router.get('/videos/:id', weakAuthMiddleware, videoController.getVideoById);
+router.get('/videos', videoController.getTop20Videos);
+router.get('/videos/username/:username', videoController.getVideosByUsername);
+router.post('/videos',authMiddleware, videoController.addVideo);
+router.delete('/videos/:id',authMiddleware, videoController.deleteVideoById);
+router.put('/videos/:id',authMiddleware , videoController.updateVideo);
 
-router.get('/videos/:id', videoController.getVideoById);
-router.post('/videos', videoController.addVideo);
+
 
 /* LIKES ROUTES */
 
-router.get('/videos/:id/likes', likesController.getLikesByVideoId);
-router.get('/videos/:id/dislikes', likesController.getDisLikesByVideoId);
-router.post('/videos/:id/likes', likesController.addLike);
-router.post('/videos/:id/dislikes', likesController.addDisLike);
-router.delete('/videos/:id/likes', likesController.deleteLike);
-router.delete('/videos/:id/dislikes', likesController.deleteDisLike);
+router.get('/videos/:id/likes', authMiddleware, likesController.getLikesByVideoId);
+router.get('/videos/:id/dislikes', authMiddleware, likesController.getDisLikesByVideoId);
+router.post('/videos/:id/likes', authMiddleware, likesController.addLike);
+router.post('/videos/:id/dislikes', authMiddleware, likesController.addDisLike);
+router.delete('/videos/:id/likes', authMiddleware, likesController.deleteLike);
+router.delete('/videos/:id/dislikes', authMiddleware, likesController.deleteDisLike);
 
 
 /* COMMENTS ROUTES */

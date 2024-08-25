@@ -1,4 +1,7 @@
+const { once } = require('events');
 const mongoose = require('mongoose');
+const Like = require('./likes');
+const Comment = require('./comments');
 
 const videoSchema = new mongoose.Schema({
     title: {
@@ -69,6 +72,109 @@ videoSchema.statics.addVideo = async function(videoData) {
         } else {
             throw new Error('Error adding video: ' + error.message);
         }
+    }
+}
+
+// Define a static method to delete a video by _id (videoId)
+videoSchema.statics.deleteVideoById = async function(videoId, reqUsername) {
+    try {
+        const objectId = new mongoose.Types.ObjectId(videoId);
+
+        const video = await this.findById(objectId);
+
+        // If no video is found with the given ID, throw an error
+        if (!video) {
+            throw new Error('Video not found');
+        }
+
+        // Check if the username of the video matches the reqUsername
+        if (video.username !== reqUsername) {
+            throw new Error('user is not authorized to delete this video');
+        }
+
+        Like.deleteAllLikes(videoId);
+        Like.deleteAllDisLikes(videoId);
+        Comment.deleteAllCommentsByVideoId(videoId);
+
+        const deletedVideo = await this.findOneAndDelete({ _id: objectId });
+
+
+        // Call the method to delete all comments associated with this videoId
+
+        return deletedVideo;
+    } catch (error) {
+        throw new Error('Error deleting video: ' + error.message);
+    }
+};
+
+
+// Define the static method for updating a video
+videoSchema.statics.updateVideoById = async function(videoId, updatedData, reqUsername) {
+    try {
+        // Use findByIdAndUpdate to update the video by its ID
+        const video = await this.findById(videoId);
+
+        // If no video is found with the given ID, throw an error
+        if (!video) {
+            throw new Error('Video not found');
+        }
+
+        // Check if the username of the video matches the reqUsername
+        if (video.username !== reqUsername) {
+            throw new Error('user is not authorized to update this video');
+        }
+
+        const updatedVideo = await this.findByIdAndUpdate(
+            videoId, 
+            updatedData, 
+            { new: true, runValidators: true } // Options: return the updated document, and run validation
+        );
+
+        return updatedVideo;
+    } catch (error) {
+        if (error.name === 'ValidationError') {
+            throw new Error('Validation Error: ' + error.message);
+        } else {
+            throw new Error('Error updating video: ' + error.message);
+        }
+    }
+};
+
+
+videoSchema.statics.getTop20Videos = async function() {
+    try {
+        const videos = await this.find({});
+
+        // Sort videos by views in descending order
+        videos.sort((a, b) => b.views - a.views);
+
+        // Get the top 10 most viewed videos
+        const top10MostViewed = videos.slice(0, 10);
+
+        // Get the remaining videos
+        const remainingVideos = videos.slice(10);
+
+        // Shuffle the remaining videos to get 10 random videos
+        const shuffledRemaining = remainingVideos.sort(() => 0.5 - Math.random());
+        const top10Random = shuffledRemaining.slice(0, 10);
+
+        // Combine the top 10 most viewed and top 10 random videos and shuffle them
+        const top20Videos = [...top10MostViewed, ...top10Random];
+        top20Videos.sort(() => 0.5 - Math.random());
+        
+        return top20Videos;
+    } catch (error) {
+        throw new Error('Error getting top 20 videos: ' + error.message);
+    }
+}
+
+videoSchema.statics.getVideosByUsername = async function(username) {
+    try {
+        const videos = await this.find({ username: username });
+        return videos;
+    }
+    catch (error) {
+        throw new Error('Error getting videos by username: ' + error.message);
     }
 }
 
