@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const User = require('./user');
 
 const commentsSchema = new mongoose.Schema({
     videoId: {
@@ -34,11 +35,21 @@ const commentsSchema = new mongoose.Schema({
     }
 });
 
+async function processComments(comments) {
+    for (const element of comments) {
+      const userDetails = await User.findUserByUsername(element._doc.userName);
+      element._doc.userImage = userDetails._doc.image;
+      element._doc.displayName = userDetails._doc.displayName;
+    }
+    return comments;
+  }
+
 // Static method to find comments by commentId
 commentsSchema.statics.findCommentsByVideoId = async function(videoId) {
     try {
         const comments = await this.find({ videoId: videoId });
-        return comments;
+        const processedComments = await processComments(comments);
+        return processedComments;
     } catch (error) {
         throw new Error('Error finding comments by commentId: ' + error.message);
     }

@@ -59,6 +59,15 @@ videoSchema.statics.findVideoById = async function(id) {
     }
 }
 
+videoSchema.statics.findVideosBySearch = async function(searchText) {
+    try {
+        const video = await this.find({ title: { $regex: searchText, $options: 'i' } });
+        return video;
+    } catch (error) {
+        throw new Error('Error finding video: ' + error.message);
+    }
+}
+
 videoSchema.statics.addVideo = async function(videoData) {
     try {
         const video = new this(videoData);

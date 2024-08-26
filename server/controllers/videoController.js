@@ -75,6 +75,19 @@ videoController.getTop20Videos = async (req, res) => {
     }
 };
 
+// Controller function to get the top 20 videos in random order
+videoController.getResultsBySearch = async (req, res) => {
+    try {
+        const videos = await Video.findVideosBySearch(req.query.search_text);
+        videos.forEach(video => {
+            video.channel = User.findUserByUsername(video.username).displayName;
+        });
+        res.json(videos);
+    } catch (error) {
+        res.status(500).json({ message: 'Server error' });
+    }
+};
+
 videoController.getVideosByUsername = async (req, res) => {
     try {
         const videos = await Video.getVideosByUsername(req.params.username);

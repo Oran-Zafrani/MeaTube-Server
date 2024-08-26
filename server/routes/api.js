@@ -21,6 +21,7 @@ router.delete('/users/:username', authMiddleware, userController.deleteUser);
 /* VIDEO ROUTES */
 router.get('/videos/:id', weakAuthMiddleware, videoController.getVideoById);
 router.get('/videos', videoController.getTop20Videos);
+router.get('/search', videoController.getResultsBySearch);
 router.get('/videos/username/:username', videoController.getVideosByUsername);
 router.post('/videos',authMiddleware, videoController.addVideo);
 router.delete('/videos/:id',authMiddleware, videoController.deleteVideoById);
