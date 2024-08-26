@@ -68,6 +68,9 @@ exports.deleteUser = async (req, res) => {
       // Extract the _id from the URL parameters
       const userId = req.params.username;
 
+      if (username != req.userData.username)
+        res.status(403).json({message: ('User is not allowed to delete ' + username)})
+
       // Call the static method to delete the user
       const deletedUser = await User.deleteUser(userId);
       
@@ -86,6 +89,9 @@ exports.updateUser = async (req, res) => {
   try {
       // Extract the username from the URL parameters
       const username = req.params.username;
+
+      if (username != req.userData.username)
+        res.status(403).json({message: ('User is not allowed to update details of ' + username)})
 
       // Call the updateUser method from the User model
       const updatedUser = await User.updateUser(username , req.body);
