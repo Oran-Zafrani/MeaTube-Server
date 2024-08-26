@@ -77,6 +77,19 @@ userSchema.statics.findUserById = async function(userId) {
   }
 };
 
+userSchema.statics.findUserByChannelName = async function(channelName) {
+  try {
+    const user = await this.findOne({ displayName: channelName });
+    return user;
+  } catch (error) {
+    if (error.name === 'ValidationError') {
+      throw new Error('Validation Error: ' + error.message);
+    } else {
+      throw new Error('Error finding user by channel name: ' + error.message);
+    }
+  }
+};
+
 userSchema.statics.findUserByUsername = async function(username) {
   try {
     const user = await this.findOne({username: username });

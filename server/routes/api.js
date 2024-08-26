@@ -11,7 +11,7 @@ const commentsController = require('../controllers/commentsController');
 /* USER ROUTES */
 router.get('/users/:id', userController.getUserById);
 router.get('/users/username/:username', userController.getUserByUsername);
-router.get('/users/channel/:channelname', userController.getUserByUsername);
+router.get('/users/channel/:channelname', userController.getUserByChannelName);
 router.post('/users', userController.createUser);
 router.post('/login', authController.login);
 router.put('/users/:username', authMiddleware, userController.updateUser); 

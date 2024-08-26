@@ -48,6 +48,19 @@ exports.getUserById = async (req, res) => {
   }
 };
 
+exports.getUserByChannelName = async (req, res) => {
+  try {
+    const user = await User.findUserByChannelName(req.params.channelname);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    res.json(user);
+  } catch (error) {
+    console.error(`Error fetching user by channel name: ${error.message}`);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
 
 // Define the DELETE /api/users/:id route handler
 exports.deleteUser = async (req, res) => {
