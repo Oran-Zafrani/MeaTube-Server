@@ -13,8 +13,8 @@ router.get('/users/:id', userController.getUserById);
 router.get('/users/username/:username', userController.getUserByUsername);
 router.post('/users', userController.createUser);
 router.post('/login', authController.login);
-router.put('/users/:username' , userController.updateUser);
-router.delete('/users/:username', userController.deleteUser);
+router.put('/users/:username',authMiddleware , userController.updateUser);
+router.delete('/users/:username',authMiddleware , userController.deleteUser);
 
 
 /* VIDEO ROUTES */
