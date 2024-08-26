@@ -1,5 +1,6 @@
 const Comment = require("../models/comments");
 const Like = require("../models/likes");
+const User = require("../models/user");
 const Video = require("../models/video");
 
 // Import any necessary modules or dependencies
@@ -23,14 +24,16 @@ videoController.getVideoById = (req, res) => {
             const videoLikes = Like.findLikesByVideoId(id);
             const videoDislikes = Like.findDisLikesByVideoId(id);
             const Comments = Comment.findCommentsByVideoId(id);
+            const user = User.findUserByUsername(video.username);
 
             //waiting for all promises to resolve
-            Promise.all([videoLikes, videoDislikes, Comments])
+            Promise.all([videoLikes, videoDislikes, Comments, user])
                 .then((values) => {
                     //assigning the values to the video object
                     video._doc.likes = values[0].length || 0;
                     video._doc.dislikes = values[1].length || 0;
                     video._doc.comments = [...values[2]] || [];
+                    video._doc.channel = values[3].displayName;
 
                     if(req.userData) {
                         video._doc.userLiked = values[0].some(like => like.username === req.userData.username);
