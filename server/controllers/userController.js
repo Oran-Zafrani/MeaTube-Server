@@ -66,13 +66,14 @@ exports.getUserByChannelName = async (req, res) => {
 exports.deleteUser = async (req, res) => {
   try {
       // Extract the _id from the URL parameters
-      const userId = req.params.username;
-
-      if (username != req.userData.username)
+      const username = req.params.username;
+      if (username != req.userData.username){
         res.status(403).json({message: ('User is not allowed to delete ' + username)})
-
+        return;
+      }
+        
       // Call the static method to delete the user
-      const deletedUser = await User.deleteUser(userId);
+      const deletedUser = await User.deleteUser(username);
       
       if (!deletedUser) {
           return res.status(404).json({ message: 'User not found' });
