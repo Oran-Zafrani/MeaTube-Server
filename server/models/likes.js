@@ -153,6 +153,20 @@ likesSchema.statics.deleteAllDisLikes = async function(videoId) {
     }
 };
 
+// Define the static method for deleting all likes and dislikes by username
+likesSchema.statics.deleteLikesByUsername = async function(username) {
+    try {
+        // Use deleteMany to remove all likes and dislikes with the given username
+        const result = await this.deleteMany({ username });
+
+        console.log("deleted " + result.deletedCount + " likes and dislikes");
+
+        return result;
+    } catch (error) {
+        throw new Error('Error deleting likes and dislikes: ' + error.message);
+    }
+};
+
 
 const Like = mongoose.model('Like', likesSchema);
 

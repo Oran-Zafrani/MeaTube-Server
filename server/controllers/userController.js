@@ -1,4 +1,7 @@
-const User = require('../models/user');
+const Comment = require("../models/comments");
+const Like = require("../models/likes");
+const User = require("../models/user");
+const Video = require("../models/video");
 
 exports.createUser = async (req, res) => {
   try {
@@ -37,7 +40,7 @@ exports.getUserByUsername = async (req, res) => {
 
 exports.getUserById = async (req, res) => {
   try {
-    const user = await User.findUserById(req.params.id ); // Use the User model and findOne method
+    const user = await User.findUserById(req.params.id); // Use the User model and findOne method
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
@@ -62,16 +65,22 @@ exports.getUserByChannelName = async (req, res) => {
 };
 
 
-// Define the DELETE /api/users/:id route handler
+// Define the DELETE /api/users/:username route handler
 exports.deleteUser = async (req, res) => {
   try {
-      // Extract the _id from the URL parameters
+      // Extract the username from the URL parameters
       const username = req.params.username;
-      if (username != req.userData.username){
-        res.status(403).json({message: ('User is not allowed to delete ' + username)})
-        return;
+
+      // Check if the username matches the one in the token
+      if (username !== req.userData.username) {
+        return res.status(403).json({ message: 'User is not allowed to delete ' + username });
       }
-        
+
+      // Delete associated content
+      await Video.deleteVideosByUsername(username);
+      await Comment.deleteCommentsByUsername(username);
+      await Like.deleteLikesByUsername(username);
+
       // Call the static method to delete the user
       const deletedUser = await User.deleteUser(username);
       
@@ -79,31 +88,32 @@ exports.deleteUser = async (req, res) => {
           return res.status(404).json({ message: 'User not found' });
       }
 
-      res.status(200).json({ message: 'User deleted successfully' });
+      res.status(200).json({ message: 'User and associated content deleted successfully' });
   } catch (error) {
-      res.status(400).json({ message: error.message });
+      console.error(`Error deleting user: ${error.message}`);
+      res.status(500).json({ message: 'Server error' });
   }
 };
 
 
 exports.updateUser = async (req, res) => {
   try {
-      // Extract the username from the URL parameters
-      const username = req.params.username;
+    // Extract the username from the URL parameters
+    const username = req.params.username;
 
-      if (username != req.userData.username)
-        res.status(403).json({message: ('User is not allowed to update details of ' + username)})
+    if (username != req.userData.username)
+      res.status(403).json({ message: ('User is not allowed to update details of ' + username) })
 
-      // Call the updateUser method from the User model
-      const updatedUser = await User.updateUser(username , req.body);
+    // Call the updateUser method from the User model
+    const updatedUser = await User.updateUser(username, req.body);
 
-      if (!updatedUser) {
-          return res.status(404).json({ message: 'User not found' });
-      }
+    if (!updatedUser) {
+      return res.status(404).json({ message: 'User not found' });
+    }
 
-      res.status(200).json(updatedUser);
+    res.status(200).json(updatedUser);
   } catch (error) {
-      res.status(400).json({ message: error.message });
+    res.status(400).json({ message: error.message });
   }
 };
 

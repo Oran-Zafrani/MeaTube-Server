@@ -71,6 +71,20 @@ commentsSchema.statics.deleteComment = async function(commentId) {
     }
 };
 
+// Define the static method for deleting all comments by username
+commentsSchema.statics.deleteCommentsByUsername = async function(username) {
+    try {
+        // Use deleteMany to remove all comments with the given username
+        const result = await this.deleteMany({ userName: username });
+
+        console.log("deleted " + result.deletedCount + " comments");
+
+        return result;
+    } catch (error) {
+        throw new Error('Error deleting comments: ' + error.message);
+    }
+};
+
 
 // Define the static method for adding a comment
 commentsSchema.statics.addComment = async function(commentData, videoId) {
