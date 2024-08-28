@@ -116,6 +116,28 @@ videoSchema.statics.deleteVideoById = async function(videoId, reqUsername) {
     }
 };
 
+// Define a static method to delete all videos by username
+videoSchema.statics.deleteVideosByUsername = async function(username) {
+    try {
+        const videos = await this.find({ username });
+
+        // Delete all likes and comments associated with each video
+        for (const video of videos) {
+            await Like.deleteAllLikes(video._id);
+            await Like.deleteAllDisLikes(video._id);
+            await Comment.deleteAllCommentsByVideoId(video._id);
+        }
+
+        // Delete all videos by username
+        await this.deleteMany({ username });
+    } catch (error) {
+        console.error(`Error deleting videos by username: ${error.message}`);
+        throw new Error('Error deleting videos');
+    }
+};
+
+
+
 
 // Define the static method for updating a video
 videoSchema.statics.updateVideoById = async function(videoId, updatedData, reqUsername) {
