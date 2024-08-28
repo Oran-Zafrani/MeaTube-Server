@@ -1,4 +1,5 @@
 const User = require('../models/user');
+const jwt = require('jsonwebtoken');
 
 exports.createUser = async (req, res) => {
   try {
@@ -66,13 +67,13 @@ exports.getUserByChannelName = async (req, res) => {
 exports.deleteUser = async (req, res) => {
   try {
       // Extract the _id from the URL parameters
-      const userId = req.params.username;
+      const username = req.params.username;
 
       if (username != req.userData.username)
         res.status(403).json({message: ('User is not allowed to delete ' + username)})
 
       // Call the static method to delete the user
-      const deletedUser = await User.deleteUser(userId);
+      const deletedUser = await User.deleteUser(username);
       
       if (!deletedUser) {
           return res.status(404).json({ message: 'User not found' });
@@ -100,7 +101,13 @@ exports.updateUser = async (req, res) => {
           return res.status(404).json({ message: 'User not found' });
       }
 
-      res.status(200).json(updatedUser);
+      const token = jwt.sign(
+        { userId: updatedUser._id, username: updatedUser.username, displayName: updatedUser.displayName },
+        process.env.JWT_SECRET,
+        { expiresIn: '1h' } // Token expires in 1 hour
+      );
+
+      res.status(200).json({updatedUser, token});
   } catch (error) {
       res.status(400).json({ message: error.message });
   }
