@@ -115,7 +115,7 @@ exports.updateUser = async (req, res) => {
       const token = jwt.sign(
         { userId: updatedUser._id, username: updatedUser.username, displayName: updatedUser.displayName },
         process.env.JWT_SECRET,
-        { expiresIn: '1h' } // Token expires in 1 hour
+        { expiresIn: '24h' } // Token expires in 24 hours
       );
 
       res.status(200).json({updatedUser, token});

@@ -52,7 +52,16 @@ const videoSchema = new mongoose.Schema({
 
 videoSchema.statics.findVideoById = async function(id) {
     try {
-        const video = await this.findById(id);
+        const video = await this.findByIdAndUpdate(
+            id,
+            { $inc: { views: 1 } },
+            { new: true, runValidators: true }
+        );
+        
+        if (!video) {
+            throw new Error('Video not found');
+        }
+        
         return video;
     } catch (error) {
         throw new Error('Error finding video: ' + error.message);

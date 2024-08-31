@@ -17,7 +17,7 @@ const likesSchema = new mongoose.Schema({
 });
 
 // Create a unique index on the combination of user_id and video_id
-likesSchema.index({ user_id: 1, video_id: 1 }, { unique: true });
+likesSchema.index({ username: 1, video_id: 1 }, { unique: true });
 
 
 // Define a static method to find likes by video_id

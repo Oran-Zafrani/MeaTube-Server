@@ -66,10 +66,14 @@ videoController.addVideo = async (req, res) => {
 videoController.getTop20Videos = async (req, res) => {
     try {
         const videos = await Video.getTop20Videos();
-        videos.forEach(async video => {
-            video.channel = await User.findUserByUsername(video.username).displayName;
+        const videoPromises = videos.map(async video => {
+            const userDetail = await User.findUserByUsername(video.username);
+            video.channel = userDetail.displayName;
+            return video;
         });
-        res.json(videos);
+
+        const updatedVideos = await Promise.all(videoPromises);
+        res.json(updatedVideos);
     } catch (error) {
         res.status(500).json({ message: 'Server error' });
     }

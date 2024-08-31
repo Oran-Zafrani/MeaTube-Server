@@ -49,6 +49,10 @@ commentsSchema.statics.findCommentsByVideoId = async function(videoId) {
     try {
         const comments = await this.find({ videoId: videoId });
         const processedComments = await processComments(comments);
+
+        // Sort comments by creation date in descending order
+        comments.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
         return processedComments;
     } catch (error) {
         throw new Error('Error finding comments by commentId: ' + error.message);
