@@ -1,8 +1,8 @@
 {
   "files": {
-    "main.css": "/static/css/main.ddab62ef.css",
-    "main.js": "/static/js/main.b0344702.js",
-    "static/js/453.554b773c.chunk.js": "/static/js/453.554b773c.chunk.js",
+    "main.css": "/static/css/main.af3c6203.css",
+    "main.js": "/static/js/main.db9e2833.js",
+    "static/js/453.1564e05e.chunk.js": "/static/js/453.1564e05e.chunk.js",
     "static/media/bootstrap-icons.woff?": "/static/media/bootstrap-icons.39795c0b4513de014cf8.woff",
     "static/media/bootstrap-icons.woff2?": "/static/media/bootstrap-icons.b7bcc075b395c14ce8c2.woff2",
     "static/media/meatube_logo_with_text.png": "/static/media/meatube_logo_with_text.b4fee95c5f680784db96.png",
@@ -13,12 +13,12 @@
     "static/media/fish.svg": "/static/media/fish.1406eaa02f05802bd66688342dda67dc.svg",
     "static/media/sheep.svg": "/static/media/sheep.54aa96129ddaa36fc5fd2ff685586dc8.svg",
     "index.html": "/index.html",
-    "main.ddab62ef.css.map": "/static/css/main.ddab62ef.css.map",
-    "main.b0344702.js.map": "/static/js/main.b0344702.js.map",
-    "453.554b773c.chunk.js.map": "/static/js/453.554b773c.chunk.js.map"
+    "main.af3c6203.css.map": "/static/css/main.af3c6203.css.map",
+    "main.db9e2833.js.map": "/static/js/main.db9e2833.js.map",
+    "453.1564e05e.chunk.js.map": "/static/js/453.1564e05e.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.ddab62ef.css",
-    "static/js/main.b0344702.js"
+    "static/css/main.af3c6203.css",
+    "static/js/main.db9e2833.js"
   ]
 }
