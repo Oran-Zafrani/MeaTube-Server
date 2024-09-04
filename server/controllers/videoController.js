@@ -94,7 +94,13 @@ videoController.getResultsBySearch = async (req, res) => {
 
 videoController.getVideosByUsername = async (req, res) => {
     try {
-        const videos = await Video.getVideosByUsername(req.params.username);
+        const userDetails = await User.findUserByUsername(req.params.username);
+        const videos = await Video.getVideosByUsername(req.params.username).then((videos) => {
+        videos.forEach(video => {
+            video.channel = userDetails.displayName;
+        });
+        return videos;
+    });
         res.json(videos);
     } catch (error) {
         res.status(500).json({ message: 'Server error' });
