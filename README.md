@@ -16,6 +16,7 @@ This project implements a dynamic web server for an online video-sharing platfor
 
 1. **Clone the repository**:
    ```bash
+   https://github.com/Oran-Zafrani/MeaTube-Server.git
 2. **Navigate to the project directory**:
    cd videoplatform
 3. **Install dependencies:**
