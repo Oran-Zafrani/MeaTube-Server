@@ -1,14 +1,12 @@
 # MeaTube-Server
-This project implements a dynamic web server for an online video-sharing platform. The server allows users to upload videos, manage their profiles, and interact with video content through likes, comments, and more. It provides a RESTful API and uses **MongoDB** for data storage.
+This project implements a dynamic web server for an online video-sharing platform. The server allows users to upload videos, manage their profiles, and interact with video content through likes, comments, and more. It provides a RESTful API and uses MongoDB for data storage.
 
 ## Table of Contents
 
 1. [Installation](#installation)
-2. [Usage](#usage)
-3. [API Endpoints](#api-endpoints)
-4. [Features](#features)
-5. [Tech Stack](#tech-stack)
-6. [License](#license)
+2. [API Endpoints](#api-endpoints)
+3. [Features](#features)
+4. [Tech Stack](#tech-stack)
 
 ---
 
@@ -18,17 +16,26 @@ This project implements a dynamic web server for an online video-sharing platfor
    ```bash
    https://github.com/Oran-Zafrani/MeaTube-Server.git
 2. **Navigate to the project directory**:
+   ```bash
    cd videoplatform
 3. **Install dependencies:**
+   ```bash
    npm install
 4. **Set up MongoDB:**
    Ensure you have MongoDB installed and running. Modify the config file to point to your MongoDB instance.
-5. **Run the server:**
+   ```bash
+   MONGODB_URI = myMongoDBUri
+5. **Set JWT secret**
+   Set the JWT secret in your environment variables or configuration file.
+   ```bash
+   JWT_SECRET=mySuperSecretKey
+6. **Run the server:**
+   ```bash
    npm start
    
-The server will be running locally at http://localhost:5000. The API serves endpoints for video and user interactions, supporting CRUD operations for videos and users.
+The server will be running locally at http://localhost:8080. The API serves endpoints for video and user interactions, supporting CRUD operations for videos and users.
 
-## API Routes
+## API Endpoints
 
 ### User Routes
 - `GET /users/:id`: Get details about a user by their ID
@@ -63,17 +70,19 @@ The server will be running locally at http://localhost:5000. The API serves endp
 - `DELETE /comments/:id`: Delete a comment by its ID (protected route)
 
 ## Features
-   Video Uploads: Users can upload, view, and manage videos.
-   User Authentication: Secure login using JWT (JSON Web Tokens).
-   RESTful API: Exposed API for managing users and videos.
-   Dynamic Video List: Top videos are displayed in random order.
-   Likes and Comments: Users can like/dislike videos and add comments.
+- Video Uploads: Users can upload, view, and manage videos.
+- User Authentication: Secure login using JWT (JSON Web Tokens).
+- RESTful API: Exposed API for managing users and videos.
+- Dynamic Video List: Top videos are displayed in random order.
+- Likes and Comments: Users can like/dislike videos and add comments.
    
 ## Tech Stack
-   Frontend: React (HTML, CSS, JavaScript)
-   Backend: Node.js, Express
-   Database: MongoDB (for data persistence)
-   API: RESTful API built with Express
-   
-## License
-   MIT License
+- Frontend: React (HTML, CSS, JavaScript)
+- Backend: Node.js, Express, Mongoose.
+- Database: MongoDB (for data persistence)
+- API: RESTful API built with Express
+
+# Team:
+- Ofri Kastenbaum
+- Oran Zafrani
+- Bar Shwartz
