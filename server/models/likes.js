@@ -17,7 +17,7 @@ const likesSchema = new mongoose.Schema({
 });
 
 // Create a unique index on the combination of user_id and video_id
-likesSchema.index({ user_id: 1, video_id: 1 }, { unique: true });
+likesSchema.index({ username: 1, video_id: 1 }, { unique: true });
 
 
 // Define a static method to find likes by video_id
@@ -150,6 +150,20 @@ likesSchema.statics.deleteAllDisLikes = async function(videoId) {
         return result;
     } catch (error) {
         throw new Error('Error deleting dislikes: ' + error.message);
+    }
+};
+
+// Define the static method for deleting all likes and dislikes by username
+likesSchema.statics.deleteLikesByUsername = async function(username) {
+    try {
+        // Use deleteMany to remove all likes and dislikes with the given username
+        const result = await this.deleteMany({ username });
+
+        console.log("deleted " + result.deletedCount + " likes and dislikes");
+
+        return result;
+    } catch (error) {
+        throw new Error('Error deleting likes and dislikes: ' + error.message);
     }
 };
 

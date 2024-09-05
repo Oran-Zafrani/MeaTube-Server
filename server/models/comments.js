@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const User = require('./user');
 
 const commentsSchema = new mongoose.Schema({
     videoId: {
@@ -34,11 +35,25 @@ const commentsSchema = new mongoose.Schema({
     }
 });
 
+async function processComments(comments) {
+    for (const element of comments) {
+      const userDetails = await User.findUserByUsername(element._doc.userName);
+      element._doc.userImage = userDetails._doc.image;
+      element._doc.displayName = userDetails._doc.displayName;
+    }
+    return comments;
+  }
+
 // Static method to find comments by commentId
 commentsSchema.statics.findCommentsByVideoId = async function(videoId) {
     try {
         const comments = await this.find({ videoId: videoId });
-        return comments;
+        const processedComments = await processComments(comments);
+
+        // Sort comments by creation date in descending order
+        comments.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+        return processedComments;
     } catch (error) {
         throw new Error('Error finding comments by commentId: ' + error.message);
     }
@@ -57,6 +72,20 @@ commentsSchema.statics.deleteComment = async function(commentId) {
         return deletedComment;
     } catch (error) {
         throw new Error('Error deleting comment: ' + error.message);
+    }
+};
+
+// Define the static method for deleting all comments by username
+commentsSchema.statics.deleteCommentsByUsername = async function(username) {
+    try {
+        // Use deleteMany to remove all comments with the given username
+        const result = await this.deleteMany({ userName: username });
+
+        console.log("deleted " + result.deletedCount + " comments");
+
+        return result;
+    } catch (error) {
+        throw new Error('Error deleting comments: ' + error.message);
     }
 };
 

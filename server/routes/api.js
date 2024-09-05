@@ -11,15 +11,17 @@ const commentsController = require('../controllers/commentsController');
 /* USER ROUTES */
 router.get('/users/:id', userController.getUserById);
 router.get('/users/username/:username', userController.getUserByUsername);
+router.get('/users/channel/:channelname', userController.getUserByChannelName);
 router.post('/users', userController.createUser);
 router.post('/login', authController.login);
-router.put('/users/:username' , userController.updateUser);
-router.delete('/users/:username', userController.deleteUser);
+router.put('/users/:username', authMiddleware, userController.updateUser); 
+router.delete('/users/:username', authMiddleware, userController.deleteUser); 
 
 
 /* VIDEO ROUTES */
 router.get('/videos/:id', weakAuthMiddleware, videoController.getVideoById);
 router.get('/videos', videoController.getTop20Videos);
+router.get('/search', videoController.getResultsBySearch);
 router.get('/videos/username/:username', videoController.getVideosByUsername);
 router.post('/videos',authMiddleware, videoController.addVideo);
 router.delete('/videos/:id',authMiddleware, videoController.deleteVideoById);

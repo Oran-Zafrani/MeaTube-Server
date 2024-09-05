@@ -1,6 +1,7 @@
 // models/User.js
 const mongoose = require('mongoose');
 
+
 const userSchema = new mongoose.Schema({
   username: { 
     type: String, 
@@ -13,7 +14,8 @@ const userSchema = new mongoose.Schema({
   },
   displayName: { 
     type: String, 
-    required: true 
+    required: true,
+    unique: true
   },
   image: { 
     type: String
@@ -73,6 +75,19 @@ userSchema.statics.findUserById = async function(userId) {
       throw new Error('Validation Error: ' + error.message);
     } else {
         throw new Error('Error adding user: ' + error.message);
+    }
+  }
+};
+
+userSchema.statics.findUserByChannelName = async function(channelName) {
+  try {
+    const user = await this.findOne({ displayName: channelName });
+    return user;
+  } catch (error) {
+    if (error.name === 'ValidationError') {
+      throw new Error('Validation Error: ' + error.message);
+    } else {
+      throw new Error('Error finding user by channel name: ' + error.message);
     }
   }
 };

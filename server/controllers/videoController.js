@@ -66,6 +66,26 @@ videoController.addVideo = async (req, res) => {
 videoController.getTop20Videos = async (req, res) => {
     try {
         const videos = await Video.getTop20Videos();
+        const videoPromises = videos.map(async video => {
+            const userDetail = await User.findUserByUsername(video.username);
+            video.channel = userDetail.displayName;
+            return video;
+        });
+
+        const updatedVideos = await Promise.all(videoPromises);
+        res.json(updatedVideos);
+    } catch (error) {
+        res.status(500).json({ message: 'Server error' });
+    }
+};
+
+// Controller function to get the top 20 videos in random order
+videoController.getResultsBySearch = async (req, res) => {
+    try {
+        const videos = await Video.findVideosBySearch(req.query.search_text);
+        videos.forEach(video => {
+            video.channel = User.findUserByUsername(video.username).displayName;
+        });
         res.json(videos);
     } catch (error) {
         res.status(500).json({ message: 'Server error' });
@@ -74,7 +94,13 @@ videoController.getTop20Videos = async (req, res) => {
 
 videoController.getVideosByUsername = async (req, res) => {
     try {
-        const videos = await Video.getVideosByUsername(req.params.username);
+        const userDetails = await User.findUserByUsername(req.params.username);
+        const videos = await Video.getVideosByUsername(req.params.username).then((videos) => {
+        videos.forEach(video => {
+            video.channel = userDetails.displayName;
+        });
+        return videos;
+    });
         res.json(videos);
     } catch (error) {
         res.status(500).json({ message: 'Server error' });

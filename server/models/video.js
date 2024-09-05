@@ -52,7 +52,25 @@ const videoSchema = new mongoose.Schema({
 
 videoSchema.statics.findVideoById = async function(id) {
     try {
-        const video = await this.findById(id);
+        const video = await this.findByIdAndUpdate(
+            id,
+            { $inc: { views: 1 } },
+            { new: true, runValidators: true }
+        );
+        
+        if (!video) {
+            throw new Error('Video not found');
+        }
+        
+        return video;
+    } catch (error) {
+        throw new Error('Error finding video: ' + error.message);
+    }
+}
+
+videoSchema.statics.findVideosBySearch = async function(searchText) {
+    try {
+        const video = await this.find({ title: { $regex: searchText, $options: 'i' } });
         return video;
     } catch (error) {
         throw new Error('Error finding video: ' + error.message);
@@ -106,6 +124,28 @@ videoSchema.statics.deleteVideoById = async function(videoId, reqUsername) {
         throw new Error('Error deleting video: ' + error.message);
     }
 };
+
+// Define a static method to delete all videos by username
+videoSchema.statics.deleteVideosByUsername = async function(username) {
+    try {
+        const videos = await this.find({ username });
+
+        // Delete all likes and comments associated with each video
+        for (const video of videos) {
+            await Like.deleteAllLikes(video._id);
+            await Like.deleteAllDisLikes(video._id);
+            await Comment.deleteAllCommentsByVideoId(video._id);
+        }
+
+        // Delete all videos by username
+        await this.deleteMany({ username });
+    } catch (error) {
+        console.error(`Error deleting videos by username: ${error.message}`);
+        throw new Error('Error deleting videos');
+    }
+};
+
+
 
 
 // Define the static method for updating a video
