@@ -75,6 +75,12 @@ The server will be running locally at http://localhost:8080. The API serves endp
 - RESTful API: Exposed API for managing users and videos.
 - Dynamic Video List: Top videos are displayed in random order.
 - Likes and Comments: Users can like/dislike videos and add comments.
+
+## Instructions to Adv. System Programming Course Checker 
+1. The final src codes are wrapped under 'releases/**' branches. Each one of them refers to a different part of the project.
+2. The static client files are included inside the project, but the web project in the 'MeaTube-Web' repo can be run simultaneously.
+3. The server needs a connectable MongoDB database. Because of the exercise instructions, we haven't included the MongoDB connection string inside the project because it's considered sensitive data. To get the MongoDB connection string make contact with each of the team members.
+
    
 ## Tech Stack
 - Frontend: React (HTML, CSS, JavaScript)
