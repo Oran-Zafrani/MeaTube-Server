@@ -109,10 +109,9 @@ This project implements a dynamic web server for an online video-sharing platfor
 - API: RESTful API built with Express
 
 ## Instructions to Adv. System Programming Course Checker 
-- The final src codes are wrapped under 'releases/**' branches. Each one of them refers to a different part of the project.
+- The final src codes are wrapped under `releases/**` branches. Each one of them refers to a different part of the project.
 - The static client files are included within this project. The web application is accessible directly from the server URL.
-- You can also run the web project from the 'MeaTube-Web' repository simultaneously.
-  - Repository: [MeaTube-Web](https://github.com/Oran-Zafrani/MeaTube-Web)
+- You can also run the web project from the [MeaTube-Web](https://github.com/Oran-Zafrani/MeaTube-Web) repository simultaneously.
    
 # Team:
 - Ofri Kastenbaum
