@@ -107,6 +107,7 @@ This project implements a dynamic web server for an online video-sharing platfor
 - Backend: Node.js, Express, Mongoose.
 - Database: MongoDB (for data persistence)
 - API: RESTful API built with Express
+- Project Management: [Jira Platform](https://sbar1998.atlassian.net/jira/software/projects/MTS/boards/4)
 
 ## Instructions to Adv. System Programming Course Checker 
 - The final src codes are wrapped under `releases/**` branches. Each one of them refers to a different part of the project.
