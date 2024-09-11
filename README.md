@@ -17,23 +17,49 @@ This project implements a dynamic web server for an online video-sharing platfor
    https://github.com/Oran-Zafrani/MeaTube-Server.git
 2. **Navigate to the project directory**:
    ```bash
-   cd videoplatform
+   cd MeaTube-Server
 3. **Install dependencies:**
    ```bash
    npm install
-4. **Set up MongoDB:**
-   Ensure you have MongoDB installed and running. Modify the config file to point to your MongoDB instance.
-   ```bash
-   MONGODB_URI = myMongoDBUri
+4. **Set up MongoDB Locally**
+
+   Ensure MongoDB is installed and running on your local machine. Follow these steps to initialize your local database:
+   1. Create a new MongoDB connection:
+      - Name the connection 'MeaTubeDB'
+   2. Note your connection string:
+      - The default is typically `mongodb://localhost:27017/MeaTubeDB`
+   3. Configure your environment:
+      - Create a `.env` file in the project's root directory
+      - Add the following line to the `.env` file, replacing `<your-connection-string>` with your actual MongoDB connection string:
+      ```bash
+      MONGODB_URI=<your-connection-string>
+      ```
+      Example:
+      ```bash
+      MONGODB_URI=mongodb://localhost:27017/MeaTubeDB
 5. **Set JWT secret**
-   Set the JWT secret in your environment variables or configuration file.
+   Set the JWT secret in your `.env` file.
    ```bash
    JWT_SECRET=mySuperSecretKey
-6. **Run the server:**
+6. **Set server port (Optional)**
+   Set the server port in your `.env` file, default is port 8080:
+   ```bash
+   PORT=1234
+8. **Run the server:**
    ```bash
    npm start
+9. **Add the initial content to MeaTubeDB:**
+   After running the server, you should get an output in the terminal `connected to MongoDB` once a connection has been successfully made to MongoDB.
+   - Go to the local MongoDB on your PC, you should have the MeaTubeDB database initialized with four collections: comments, likes, users, and videos.
    
-The server will be running locally at http://localhost:8080. The API serves endpoints for video and user interactions, supporting CRUD operations for videos and users.
+      ![image](https://github.com/user-attachments/assets/9a0fa6f3-784b-422b-b251-bdf3da9ff652)
+   - Go to the [MeaTubeDB](./MeaTubeDB) folder in the repository.
+   - Import `MeaTubeDB.comments.json` to the 'comments' collection.
+   - Import `MeaTubeDB.users.json` to the 'users' collection.
+   - Import `MeaTubeDB.videos.json` to the 'videos' collection.
+   - Restart the server.
+   
+     The server will be running locally at http://localhost:8080. The API serves endpoints for video and user interactions, supporting CRUD operations for videos and users.
 
 ## API Endpoints
 
@@ -82,6 +108,11 @@ The server will be running locally at http://localhost:8080. The API serves endp
 - Database: MongoDB (for data persistence)
 - API: RESTful API built with Express
 
+## Instructions to Adv. System Programming Course Checker 
+- The final src codes are wrapped under `releases/**` branches. Each one of them refers to a different part of the project.
+- The static client files are included within this project. The web application is accessible directly from the server URL.
+- You can also run the web project from the [MeaTube-Web](https://github.com/Oran-Zafrani/MeaTube-Web) repository simultaneously.
+   
 # Team:
 - Ofri Kastenbaum
 - Oran Zafrani
