@@ -4,6 +4,11 @@ const jwt = require('jsonwebtoken');
 
 
 exports.login = async (req, res) => {
+
+/*ADDITION TO AWS_PROD */
+res.status(400).json({ message: "Login is disabled for this environment." });
+
+
   try {
     const { username, password } = req.body;
     // Find user by username

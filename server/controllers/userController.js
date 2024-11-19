@@ -5,6 +5,10 @@ const User = require("../models/user");
 const Video = require("../models/video");
 
 exports.createUser = async (req, res) => {
+
+/*ADDITION TO AWS_PROD */
+  res.status(400).json({ message: "Registration is disabled for this environment." });
+
   try {
     const newUser = await User.addUser(req.body);
     res.status(201).json(newUser);
